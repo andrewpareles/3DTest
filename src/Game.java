@@ -2,6 +2,10 @@ import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +28,7 @@ public class Game extends JPanel {
 
     private static Player p = new Player();
 
+
     private static ArrayList<GameSurface> surfaces = new ArrayList<>(Arrays.asList(
             new GameSurface(
                     new GameVector(10, -5, -5),
@@ -35,7 +40,10 @@ public class Game extends JPanel {
     ));
 
 
-    public static void main(String [] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
+        frame.addKeyListener(p);
+        frame.addMouseListener(p);
+
 
         while (true) {
             surfaces.sort((o1, o2) -> {
@@ -49,6 +57,8 @@ public class Game extends JPanel {
             for (GameSurface s : surfaces)
                 drawSurface(p, s, g);
 
+            p.moveInDirection(p.getVelocity().times(1 / fps));
+
             Thread.sleep(1000 / (long) fps);
 
             //NOTE: speed/fps = distance per frame
@@ -59,7 +69,7 @@ public class Game extends JPanel {
             //p.moveInDirection(new GameVector(0, 0, 10).times(1/fps));
             //p.setView(surfaces.get(0).getAverageSurfaceVector().minus(p.getPosition()));
             //surfaces.get(0).shiftBy(new GameVector(0, 0, .1));
-            surfaces.get(0).rotateBy(new GameVector(10, 5, 0), new GameVector(0, 2, 1), .05);
+            //surfaces.get(0).rotateBy(new GameVector(10, 5, 0), new GameVector(0, 2, 1), .05);
             //surfaces.get(0).scaleBy(new GameVector(10, 5, -5), (10 / 100d) * (1 / fps));
         }
 

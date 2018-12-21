@@ -79,7 +79,7 @@ public class GameVector {
                 .plus(focus);
     }
 
-    //axis is the axis vector, point is the point about which rotation occurs
+    //axis is the axis vector, focus is the point about which rotation occurs
     public GameVector rotateBy(GameVector focus, GameVector axis, double theta) {
 
         GameVector a = axis.normalize();
@@ -93,7 +93,6 @@ public class GameVector {
 
         GameVector w = this.minus(focus);
 
-
         //TODO TRACE BACK W to the plane and use THAT as wproj
         double x = w.x(), y = w.y(), z = w.z();
         if (w.z() != 0) z = (a.x() * x + a.y() * y) / -a.z();
@@ -104,6 +103,8 @@ public class GameVector {
         GameVector wproj = new GameVector(x, y, z);
         GameVector wheight = w.minus(wproj);
 
+        System.out.println(wheight.z());
+
         GameVector what = wproj.normalize();
         GameVector h = a.cross(what);
 
@@ -112,7 +113,6 @@ public class GameVector {
                 .times(wproj.length())
                 .plus(wheight)
                 .plus(focus);
-
     }
 
     public boolean equals(Object o) {

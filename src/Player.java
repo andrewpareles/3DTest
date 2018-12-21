@@ -1,8 +1,13 @@
 import javafx.util.Pair;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import static java.lang.Math.*;
 
-public class Player {
+public class Player implements MouseListener, KeyListener {
 
     //changing d doesn't alter anything unless VIEW_WIDTH and VIEW_HEIGHT are held constant (not dependent on angle)
     private final double d = 1;
@@ -23,6 +28,11 @@ public class Player {
     private GameVector position = positionDefault;
 
     private GameVector view;
+
+    private double WALK_SPEED = 1;
+    private double RUN_SPEED = 2;
+
+    private GameVector velocity = new GameVector(0,0,0);
 
     Player() {
         updatef();
@@ -116,8 +126,77 @@ public class Player {
         int Y = Game.toComputerCoordinateSystemY(y);
 
         return new Pair<>(X, Y);
+    }
+
+    public GameVector getVelocity() {
+        return velocity;
+    }
+
+    private void setVelocity(GameVector velocity) {
+        this.velocity = velocity;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+// USE THIS
+        //TODO REVAMP SO THAT MOVING LEFT MAKES SENSE IF CHANGE CAMERA ANGLE (ENUM MAYBE, L R F B)
+        char key = e.getKeyChar();
+        double speed = Character.isLowerCase(key) ? RUN_SPEED : WALK_SPEED;
+        GameVector view_proj_to_xy = new GameVector(view.x(), view.y(), 0).normalize();
+        switch (Character.toLowerCase(key)) {
+            case 'w':
+                setVelocity(getVelocity().plus(view_proj_to_xy));
+                break;
+            case 's':
+                setVelocity(getVelocity().plus(view_proj_to_xy.negate()));
+                break;
+
+                //TODO FIX ROTATE BY AND THIS WILL WORK. NEXT DO MOUSE MOVEMENTS, RIGHT CLICK AND DRAG TO PIVOT CAMERA
+            case 'a':
+                GameVector view_rotated_90_left = view_proj_to_xy.rotateBy(new GameVector(0,0,0),  new GameVector(0,0,1), 90);
+                setVelocity(getVelocity().plus(view_rotated_90_left));
+                break;
+            case 'd':
+                GameVector view_rotated_90_right = view_proj_to_xy.rotateBy(new GameVector(0,0,0),  new GameVector(0,0,1), 90);
+                setVelocity(getVelocity().plus(view_rotated_90_right));
+                break;
+
+
+
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+// USE THIS
+        // LITERALLY JUST SUBTRACT
+//        if (e.getKeyChar() == 'q') q = false;
 
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+//        e.getButton() == 1 || e.getButton() == 2
+// USE THIS
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 }
