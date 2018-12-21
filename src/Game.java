@@ -35,7 +35,7 @@ public class Game extends JPanel {
     ));
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String [] args) throws InterruptedException {
 
         while (true) {
             surfaces.sort((o1, o2) -> {
