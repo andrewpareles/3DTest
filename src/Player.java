@@ -28,11 +28,12 @@ public class Player implements MouseListener, KeyListener {
     private GameVector position = positionDefault;
 
     private GameVector view;
+    // velocity DOES NOT incorporate walking speed
+    private GameVector velocity = new GameVector(0, 0, 0);
+    private double wspeed = 0, aspeed = 0, sspeed = 0, dspeed = 0;
 
-    private double WALK_SPEED = 1;
-    private double RUN_SPEED = 2;
-
-    private GameVector velocity = new GameVector(0,0,0);
+    private final double WALK_SPEED = 5;
+    private final double RUN_SPEED = 10;
 
     Player() {
         updatef();
@@ -128,60 +129,68 @@ public class Player implements MouseListener, KeyListener {
         return new Pair<>(X, Y);
     }
 
-    public GameVector getVelocity() {
-        return velocity;
+    public GameVector getTotalVelocity() {
+        GameVector w = new GameVector(view.x(), view.y(), 0).normalize();
+        GameVector a = w.rotateBy(new GameVector(0, 0, 0), new GameVector(0, 0, 1), Math.PI / 2);
+        GameVector s = w.negate();
+        GameVector d = a.negate();
+
+        w = w.times(wspeed);
+        a = a.times(aspeed);
+        s = s.times(sspeed);
+        d = d.times(dspeed);
+
+        return velocity.plus(w).plus(a).plus(s).plus(d);
     }
 
     private void setVelocity(GameVector velocity) {
         this.velocity = velocity;
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-// USE THIS
-        //TODO REVAMP SO THAT MOVING LEFT MAKES SENSE IF CHANGE CAMERA ANGLE (ENUM MAYBE, L R F B)
-        char key = e.getKeyChar();
-        double speed = Character.isLowerCase(key) ? RUN_SPEED : WALK_SPEED;
-        GameVector view_proj_to_xy = new GameVector(view.x(), view.y(), 0).normalize();
+
+    private void setKeyToSpeed(char key, double speed) {
         switch (Character.toLowerCase(key)) {
             case 'w':
-                setVelocity(getVelocity().plus(view_proj_to_xy));
+                wspeed = speed;
+                break;
+            case 'a':
+                aspeed = speed;
                 break;
             case 's':
-                setVelocity(getVelocity().plus(view_proj_to_xy.negate()));
-                break;
-
-                //TODO FIX ROTATE BY AND THIS WILL WORK. NEXT DO MOUSE MOVEMENTS, RIGHT CLICK AND DRAG TO PIVOT CAMERA
-            case 'a':
-                GameVector view_rotated_90_left = view_proj_to_xy.rotateBy(new GameVector(0,0,0),  new GameVector(0,0,1), 90);
-                setVelocity(getVelocity().plus(view_rotated_90_left));
+                sspeed = speed;
                 break;
             case 'd':
-                GameVector view_rotated_90_right = view_proj_to_xy.rotateBy(new GameVector(0,0,0),  new GameVector(0,0,1), 90);
-                setVelocity(getVelocity().plus(view_rotated_90_right));
+                dspeed = speed;
                 break;
-
-
-
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-// USE THIS
-        // LITERALLY JUST SUBTRACT
-//        if (e.getKeyChar() == 'q') q = false;
+    public void keyPressed(KeyEvent e) {
+        char key = e.getKeyChar();
+        double speed = Character.isLowerCase(key) ? RUN_SPEED : WALK_SPEED;
+        setKeyToSpeed(key, speed);
+    }
 
+    @Override
+    public void keyReleased(KeyEvent e) {
+        char key = e.getKeyChar();
+        setKeyToSpeed(key, 0);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
 //        e.getButton() == 1 || e.getButton() == 2
-// USE THIS
+
+//        changeThetaBy(e.getPoint().x);
+//        changePhiBy(e.getPoint().y);
+        changeThetaBy(e.getPoint().x);
+        changePhiBy(e.getPoint().y);
     }
 
     @Override
@@ -194,6 +203,7 @@ public class Player implements MouseListener, KeyListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
+
     }
 
     @Override

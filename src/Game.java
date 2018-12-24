@@ -2,10 +2,6 @@ import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -57,7 +53,7 @@ public class Game extends JPanel {
             for (GameSurface s : surfaces)
                 drawSurface(p, s, g);
 
-            p.moveInDirection(p.getVelocity().times(1 / fps));
+            p.moveInDirection(p.getTotalVelocity().times(1 / fps));
 
             Thread.sleep(1000 / (long) fps);
 

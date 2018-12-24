@@ -47,7 +47,7 @@ public class GameVector {
     }
 
     public double lengthSquared() {
-        return x * x + y * y + z * z;
+        return this.dot(this);
     }
 
     public double distance(GameVector v) {
@@ -79,40 +79,38 @@ public class GameVector {
                 .plus(focus);
     }
 
+    // Project t onto v, return (t . v / v . v) v
+    // Requires v.length() == 1
+    public GameVector projectOnUnit(GameVector v) {
+        return v.times(this.dot(v));
+    }
+
+    // Project t onto v, return (t . v / v . v) v
+    // Requires v.length() != 0
+    public GameVector projectOn(GameVector v) {
+        return v.times(this.dot(v) / (v.lengthSquared()));
+    }
+
     //axis is the axis vector, focus is the point about which rotation occurs
     public GameVector rotateBy(GameVector focus, GameVector axis, double theta) {
 
         GameVector a = axis.normalize();
 
         //if point is on axis then do nothing
-        GameVector q = this.minus(focus);
-        if (q.length() == 0 ||
-                q.normalize().equals(a) ||
-                q.normalize().negate().equals(a))
+        GameVector w = this.minus(focus);
+        if (w.lengthSquared() == 0 ||
+                w.normalize().equals(a) ||
+                w.normalize().negate().equals(a))
             return this;
 
-        GameVector w = this.minus(focus);
+        GameVector b = w.projectOnUnit(a);
 
-        //TODO TRACE BACK W to the plane and use THAT as wproj
-        double x = w.x(), y = w.y(), z = w.z();
-        if (w.z() != 0) z = (a.x() * x + a.y() * y) / -a.z();
-        else if (w.y() != 0) y = (a.x() * x + a.z() * z) / -a.y();
-        else if (w.x() != 0) x = (a.y() * y + a.z() * z) / -a.x();
+        GameVector what = w.minus(b);
+        GameVector vhat = w.cross(a.negate()).normalize().times(what.length());
 
-        //w projected onto the plane perpendicular to a
-        GameVector wproj = new GameVector(x, y, z);
-        GameVector wheight = w.minus(wproj);
+        return b.plus(what.times(cos(theta)))
+                .plus(vhat.times(sin(theta)));
 
-        System.out.println(wheight.z());
-
-        GameVector what = wproj.normalize();
-        GameVector h = a.cross(what);
-
-        return what.times(cos(theta))
-                .plus(h.times(sin(theta)))
-                .times(wproj.length())
-                .plus(wheight)
-                .plus(focus);
     }
 
     public boolean equals(Object o) {
