@@ -39,6 +39,7 @@ public class Game extends JPanel {
     public static void main(String[] args) throws InterruptedException {
         frame.addKeyListener(p);
         frame.addMouseListener(p);
+        frame.addMouseMotionListener(p);
 
 
         while (true) {

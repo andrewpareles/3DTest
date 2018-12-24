@@ -1,19 +1,17 @@
 import javafx.util.Pair;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 
 import static java.lang.Math.*;
 
-public class Player implements MouseListener, KeyListener {
+public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
     //changing d doesn't alter anything unless VIEW_WIDTH and VIEW_HEIGHT are held constant (not dependent on angle)
     private final double d = 1;
     private double f;
 
-    private final double viewAngleWidth = 80 * PI / 180;
+    private final double viewAngleWidth = 50 * PI / 180;
     private final double viewAngleHeight = atan((double) Game.HEIGHT / Game.WIDTH * tan(viewAngleWidth));
     private final double VIEW_WIDTH = 2 * d * tan(viewAngleWidth);
     private final double VIEW_HEIGHT = 2 * d * tan(viewAngleHeight);
@@ -178,23 +176,38 @@ public class Player implements MouseListener, KeyListener {
         setKeyToSpeed(key, 0);
     }
 
+
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void keyTyped(KeyEvent e) {
+    }
+
+    private int prevX = 0, prevY = 0, dX, dY;
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        dX = x - prevX;
+        dY = y - prevY;
+        prevX = x;
+        prevY = y;
+        changeThetaBy(-dX / 1000d);
+        changePhiBy(-dY / 1000d);
 
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-//        e.getButton() == 1 || e.getButton() == 2
-
-//        changeThetaBy(e.getPoint().x);
-//        changePhiBy(e.getPoint().y);
-        changeThetaBy(e.getPoint().x);
-        changePhiBy(e.getPoint().y);
+        prevX = e.getX();
+        prevY = e.getY();
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void mouseMoved(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
     }
 
     @Override
@@ -203,7 +216,6 @@ public class Player implements MouseListener, KeyListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
