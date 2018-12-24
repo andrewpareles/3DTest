@@ -1,8 +1,8 @@
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.awt.event.*;
 
+import static java.awt.event.KeyEvent.VK_SHIFT;
 import static java.lang.Math.*;
 
 public class Player implements KeyListener, MouseMotionListener, MouseListener {
@@ -28,10 +28,16 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     private GameVector view;
     // velocity DOES NOT incorporate walking speed
     private GameVector velocity = new GameVector(0, 0, 0);
-    private double wspeed = 0, aspeed = 0, sspeed = 0, dspeed = 0;
+
+    private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
 
     private final double WALK_SPEED = 5;
-    private final double RUN_SPEED = 10;
+    private final double RUN_SPEED = 100;
+
+    private boolean isRunning = false;
+
+    private final double xSens = 5;
+    private final double ySens = 5;
 
     Player() {
         updatef();
@@ -132,13 +138,18 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         GameVector a = w.rotateBy(new GameVector(0, 0, 0), new GameVector(0, 0, 1), Math.PI / 2);
         GameVector s = w.negate();
         GameVector d = a.negate();
+        GameVector q = new GameVector(0, 0, 1);
+        GameVector e = q.negate();
 
-        w = w.times(wspeed);
-        a = a.times(aspeed);
-        s = s.times(sspeed);
-        d = d.times(dspeed);
+        double speed = isRunning ? RUN_SPEED : WALK_SPEED;
+        w = W ? w.times(speed) : GameVector.ZERO;
+        a = A ? a.times(speed) : GameVector.ZERO;
+        s = S ? s.times(speed) : GameVector.ZERO;
+        d = D ? d.times(speed) : GameVector.ZERO;
+        q = Q ? q.times(speed) : GameVector.ZERO;
+        e = E ? e.times(speed) : GameVector.ZERO;
 
-        return velocity.plus(w).plus(a).plus(s).plus(d);
+        return velocity.plus(w).plus(a).plus(s).plus(d).plus(q).plus(e);
     }
 
     private void setVelocity(GameVector velocity) {
@@ -146,19 +157,25 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
 
-    private void setKeyToSpeed(char key, double speed) {
+    private void setKeyToSpeed(char key, boolean pressed) {
         switch (Character.toLowerCase(key)) {
             case 'w':
-                wspeed = speed;
+                W = pressed;
                 break;
             case 'a':
-                aspeed = speed;
+                A = pressed;
                 break;
             case 's':
-                sspeed = speed;
+                S = pressed;
                 break;
             case 'd':
-                dspeed = speed;
+                D = pressed;
+                break;
+            case 'q':
+                Q = pressed;
+                break;
+            case 'e':
+                E = pressed;
                 break;
         }
     }
@@ -166,19 +183,21 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
-        double speed = Character.isLowerCase(key) ? RUN_SPEED : WALK_SPEED;
-        setKeyToSpeed(key, speed);
+        if (e.getKeyCode() == VK_SHIFT) isRunning = true;
+        else setKeyToSpeed(key, true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         char key = e.getKeyChar();
-        setKeyToSpeed(key, 0);
+        if (e.getKeyCode() == VK_SHIFT) isRunning = false;
+        else setKeyToSpeed(key, false);
     }
 
 
     @Override
     public void keyTyped(KeyEvent e) {
+
     }
 
     private int prevX = 0, prevY = 0, dX, dY;
@@ -191,8 +210,9 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         dY = y - prevY;
         prevX = x;
         prevY = y;
-        changeThetaBy(-dX / 1000d);
-        changePhiBy(-dY / 1000d);
+        changeThetaBy(-dX * xSens / Game.WIDTH);
+        //this is width on purpose v
+        changePhiBy(-dY * ySens / Game.WIDTH);
 
     }
 

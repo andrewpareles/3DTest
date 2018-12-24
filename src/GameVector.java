@@ -3,6 +3,8 @@ import static java.lang.Math.*;
 public class GameVector {
     private double x, y, z;
 
+    public static GameVector ZERO = new GameVector(0, 0, 0);
+
     public GameVector(double x, double y, double z) {
         this.x = x;
         this.y = y;

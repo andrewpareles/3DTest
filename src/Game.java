@@ -62,9 +62,6 @@ public class Game extends JPanel {
             //NOTE: percent/fps = percent per frame
 
 
-            //p.changeThetaBy(.01);
-            //p.moveInDirection(new GameVector(0, 0, 10).times(1/fps));
-            //p.setView(surfaces.get(0).getAverageSurfaceVector().minus(p.getPosition()));
             //surfaces.get(0).shiftBy(new GameVector(0, 0, .1));
             //surfaces.get(0).rotateBy(new GameVector(10, 5, 0), new GameVector(0, 2, 1), .05);
             //surfaces.get(0).scaleBy(new GameVector(10, 5, -5), (10 / 100d) * (1 / fps));
@@ -86,14 +83,13 @@ public class Game extends JPanel {
             ys[i] = coordinates.getValue();
         }
 
+        g.setColor(new Color(120, 32, 6));
         g.fillPolygon(xs, ys, numPoints);
-        g.setColor(new Color(120, 40, 120));
 
     }
 
 
     public static int toComputerCoordinateSystemX(double X) {
-
         return (int) round(X) + WIDTH / 2;
     }
 
