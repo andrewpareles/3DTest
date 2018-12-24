@@ -1,15 +1,22 @@
+import java.awt.*;
+
 import static java.lang.Math.*;
 
 public class GameVector {
     private double x, y, z;
 
-    public static GameVector ZERO = new GameVector(0, 0, 0);
+    public static final GameVector ZERO = new GameVector(0, 0, 0);
+    public static final GameVector X = new GameVector(1, 0, 0);
+    public static final GameVector Y = new GameVector(0, 1, 0);
+    public static final GameVector Z = new GameVector(0, 0, 1);
+
 
     public GameVector(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
+
 
     public double dot(GameVector v) {
         return x * v.x + y * v.y + z * v.z;

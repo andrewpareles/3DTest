@@ -1,11 +1,24 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameSurface {
     private ArrayList<GameVector> surfaceBounds = new ArrayList<>();
 
+    private Color color;
+
     public GameSurface(GameVector... vectors) {
         surfaceBounds.addAll(Arrays.asList(vectors));
+        this.color = new Color(0, 0, 0);
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public GameSurface setColor(Color c) {
+        this.color = c;
+        return this;
     }
 
     public GameVector getPoint(int n) {
@@ -17,7 +30,7 @@ public class GameSurface {
     }
 
     public GameVector getAverageSurfaceVector() {
-        GameVector sum = new GameVector(0, 0, 0);
+        GameVector sum = GameVector.ZERO;
         for (GameVector v : surfaceBounds)
             sum = sum.plus(v);
         sum = sum.times(1.0 / surfaceBounds.size());

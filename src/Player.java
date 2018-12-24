@@ -54,6 +54,8 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
     public void setView(double theta, double phi) {
+        if (phi > Math.PI / 2) phi = Math.PI / 2;
+        if (phi < -Math.PI / 2) phi = -Math.PI / 2;
         this.theta = theta;
         this.phi = phi;
         updatef();
@@ -104,7 +106,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
         GameVector H = new GameVector(-v.y(), v.x(), 0).negate().normalize();
         GameVector V = (v.z() == 0) ?
-                new GameVector(0, 0, 1) :
+                GameVector.Z :
                 H.cross(v).normalize();
 
         GameVector wL = v.plus(P).minus(H.times(VIEW_WIDTH / 2));
@@ -136,10 +138,10 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
     public GameVector getTotalVelocity() {
         GameVector w = new GameVector(view.x(), view.y(), 0).normalize();
-        GameVector a = w.rotateBy(new GameVector(0, 0, 0), new GameVector(0, 0, 1), Math.PI / 2);
+        GameVector a = w.rotateBy(GameVector.ZERO, new GameVector(0, 0, 1), Math.PI / 2);
         GameVector s = w.negate();
         GameVector d = a.negate();
-        GameVector q = new GameVector(0, 0, 1);
+        GameVector q = GameVector.Z;
         GameVector e = q.negate();
 
         double speed = isRunning ? RUN_SPEED : WALK_SPEED;

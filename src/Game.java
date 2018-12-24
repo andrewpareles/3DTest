@@ -26,13 +26,45 @@ public class Game extends JPanel {
 
 
     private static ArrayList<GameSurface> surfaces = new ArrayList<>(Arrays.asList(
+            // wall, xs position
             new GameSurface(
-                    new GameVector(10, -5, -5),
-                    new GameVector(10, -5, 5),
-                    new GameVector(10, 5, 5),
-                    new GameVector(10, 5, -5)
-            )
-
+                    new GameVector(5, -5, -5),
+                    new GameVector(5, -5, 5),
+                    new GameVector(5, 5, 5),
+                    new GameVector(5, 5, -5)
+            ).setColor(new Color(120, 32, 6)),
+            new GameSurface(
+                    new GameVector(-5, -5, -5),
+                    new GameVector(-5, -5, 5),
+                    new GameVector(-5, 5, 5),
+                    new GameVector(-5, 5, -5)
+            ).setColor(new Color(120, 32, 6)),
+            //floor, zs position
+            new GameSurface(
+                    new GameVector(-5, -5, 5),
+                    new GameVector(-5, 5, 5),
+                    new GameVector(5, 5, 5),
+                    new GameVector(5, -5, 5)
+            ).setColor(new Color(0, 17, 255)),
+            new GameSurface(
+                    new GameVector(-5, -5, -5),
+                    new GameVector(-5, 5, -5),
+                    new GameVector(5, 5, -5),
+                    new GameVector(5, -5, -5)
+            ).setColor(new Color(0, 17, 255)),
+            // wall, ys position
+            new GameSurface(
+                    new GameVector(-5, 5, -5),
+                    new GameVector(-5, 5, 5),
+                    new GameVector(5, 5, 5),
+                    new GameVector(5, 5, -5)
+            ).setColor(new Color(21, 255, 0)),
+            new GameSurface(
+                    new GameVector(-5, -5, -5),
+                    new GameVector(-5, -5, 5),
+                    new GameVector(5, -5, 5),
+                    new GameVector(5, -5, -5)
+            ).setColor(new Color(21, 255, 0))
     ));
 
 
@@ -83,7 +115,7 @@ public class Game extends JPanel {
             ys[i] = coordinates.getValue();
         }
 
-        g.setColor(new Color(120, 32, 6));
+        g.setColor(s.getColor());
         g.fillPolygon(xs, ys, numPoints);
 
     }
