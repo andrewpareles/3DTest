@@ -241,11 +241,11 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public void mouseMoved(MouseEvent e) {
         int xmid = Game.WIDTH / 2;
         int ymid = Game.HEIGHT / 2;
-        dX = e.getX() - xmid;
-        dY = e.getY() - ymid;
+        dX = e.getXOnScreen() - xmid;
+        dY = e.getYOnScreen() - ymid;
 
-        changeThetaBy(-dX * xSens / Game.WIDTH);
-        changePhiBy(-dY * ySens / Game.WIDTH);
+        changeThetaBy(-dX * xSens / 1000);
+        changePhiBy(-dY * ySens / 1000);
 
         robot.mouseMove(xmid, ymid);
     }
