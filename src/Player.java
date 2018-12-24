@@ -1,5 +1,6 @@
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.awt.event.*;
 
 import static java.awt.event.KeyEvent.VK_SHIFT;
@@ -194,6 +195,19 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         else setKeyPressed(key, false);
     }
 
+    private Robot initializeRobot() {
+        Robot r = null;
+        try {
+            r = new Robot();
+        } catch (Exception e) {
+            return r;
+        }
+        return r;
+
+    }
+
+    private Robot robot = initializeRobot();
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -202,28 +216,38 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
     private int prevX = 0, prevY = 0, dX, dY;
 
+
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        dX = x - prevX;
-        dY = y - prevY;
-        prevX = x;
-        prevY = y;
-        changeThetaBy(-dX * xSens / Game.WIDTH);
-        //this is width on purpose v
-        changePhiBy(-dY * ySens / Game.WIDTH);
+//        int x = e.getX();
+//        int y = e.getY();
+//        dX = x - prevX;
+//        dY = y - prevY;
+//        prevX = x;
+//        prevY = y;
+//        changeThetaBy(-dX * xSens / Game.WIDTH);
+//        //this is width on purpose v
+//        changePhiBy(-dY * ySens / Game.WIDTH);
 
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = e.getX();
-        prevY = e.getY();
+//        prevX = e.getX();
+//        prevY = e.getY();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        int xmid = Game.WIDTH / 2;
+        int ymid = Game.HEIGHT / 2;
+        dX = e.getX() - xmid;
+        dY = e.getY() - ymid;
+
+        changeThetaBy(-dX * xSens / Game.WIDTH);
+        changePhiBy(-dY * ySens / Game.WIDTH);
+
+        robot.mouseMove(xmid, ymid);
     }
 
     @Override
