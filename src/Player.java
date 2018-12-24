@@ -21,6 +21,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     private double theta = thetaDefault;
 
     private final double phiDefault = 0;
+    // phi is from -pi/2 to pi/2
     private double phi = phiDefault;
 
     private final GameVector positionDefault = new GameVector(0, 0, 0);
@@ -40,6 +41,9 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     private final double xSens = 5;
     private final double ySens = 5;
 
+    private final double verticalCutoffAngle = PI / 2 - 1 * PI / 180;
+
+    //RI: Player can never look totally up or totally down
     Player() {
         updatef();
         updateView();
@@ -54,8 +58,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
     public void setView(double theta, double phi) {
-        if (phi > Math.PI / 2) phi = Math.PI / 2;
-        if (phi < -Math.PI / 2) phi = -Math.PI / 2;
         this.theta = theta;
         this.phi = phi;
         updatef();
@@ -74,7 +76,10 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
     public void changePhiBy(double changePhi) {
-        setView(theta, phi + changePhi);
+        double newPhi = phi + changePhi;
+        if (newPhi > verticalCutoffAngle) newPhi = verticalCutoffAngle;
+        else if (newPhi < -verticalCutoffAngle) newPhi = -verticalCutoffAngle;
+        setView(theta, newPhi);
     }
 
     public void changeThetaBy(double changeTheta) {
@@ -95,24 +100,25 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         GameVector P = position;
         GameVector PtoP1 = P1.minus(P);
 
-        double t = ((v.x() * v.x()) + (v.y() * v.y()) + (v.z() * v.z())) /
-                ((v.x() * PtoP1.x()) + (v.y() * PtoP1.y()) + (v.z() * PtoP1.z()));
-
+        double t = v.dot(v) / v.dot(PtoP1);
         //if behind or in you
         if (t <= 0) return null;
 
         //point on plane:
         GameVector Pt = P.plus(PtoP1.times(t));
 
+        // Now determine how to draw Pt on the screen
+        // orthogonal vectors, H is horizontal ("x-axis"), V is vertical ("y-axis")
         GameVector H = new GameVector(-v.y(), v.x(), 0).negate().normalize();
-        GameVector V = (v.z() == 0) ?
-                GameVector.Z :
-                H.cross(v).normalize();
+        GameVector V = H.cross(v).normalize();
 
-        GameVector wL = v.plus(P).minus(H.times(VIEW_WIDTH / 2));
-        GameVector wR = v.plus(P).plus(H.times(VIEW_WIDTH / 2));
-        GameVector wB = v.plus(P).minus(V.times(VIEW_HEIGHT / 2));
-        GameVector wT = v.plus(P).plus(V.times(VIEW_HEIGHT / 2));
+        // point that V and H are based on, "center" of screen
+        GameVector vPlusP = v.plus(P);
+
+        GameVector wL = vPlusP.minus(H.times(VIEW_WIDTH / 2));
+        GameVector wR = vPlusP.plus(H.times(VIEW_WIDTH / 2));
+        GameVector wB = vPlusP.minus(V.times(VIEW_HEIGHT / 2));
+        GameVector wT = vPlusP.plus(V.times(VIEW_HEIGHT / 2));
 
         double dL = V.cross(Pt.minus(wL)).length();
         double dR = V.cross(Pt.minus(wR)).length();
@@ -197,6 +203,41 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         else setKeyPressed(key, false);
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    double dX, dY, prevX, prevY;
+    @Override
+    public void mousePressed(MouseEvent e) {
+        prevX = e.getX();
+        prevY = e.getY();
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        int xmid = Game.WIDTH / 2;
+        int ymid = Game.HEIGHT / 2;
+
+        robot.mouseMove(xmid, ymid);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        dX = x - prevX;
+        dY = y - prevY;
+        prevX = x;
+        prevY = y;
+        changeThetaBy(-dX * xSens / Game.WIDTH);
+        //this is width on purpose v
+        changePhiBy(-dY * ySens / Game.WIDTH);
+    }
+
+
+
     private Robot initializeRobot() {
         Robot r = null;
         try {
@@ -205,51 +246,19 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
             return r;
         }
         return r;
-
     }
-
     private Robot robot = initializeRobot();
-
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    private int prevX = 0, prevY = 0, dX, dY;
-
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-//        int x = e.getX();
-//        int y = e.getY();
-//        dX = x - prevX;
-//        dY = y - prevY;
-//        prevX = x;
-//        prevY = y;
-//        changeThetaBy(-dX * xSens / Game.WIDTH);
-//        //this is width on purpose v
-//        changePhiBy(-dY * ySens / Game.WIDTH);
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-//        prevX = e.getX();
-//        prevY = e.getY();
-    }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int xmid = Game.WIDTH / 2;
-        int ymid = Game.HEIGHT / 2;
-        dX = e.getXOnScreen() - xmid;
-        dY = e.getYOnScreen() - ymid;
+//        int xmid = Game.WIDTH / 2;
+//        int ymid = Game.HEIGHT / 2;
+//        int dX = e.getXOnScreen() - xmid;
+//        int dY = e.getYOnScreen() - ymid;
+//
+//        changeThetaBy(-dX * xSens / 1000);
+//        changePhiBy(-dY * ySens / 1000);
 
-        changeThetaBy(-dX * xSens / 1000);
-        changePhiBy(-dY * ySens / 1000);
-
-        robot.mouseMove(xmid, ymid);
     }
 
     @Override
@@ -258,10 +267,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
     }
 
     @Override
