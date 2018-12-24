@@ -157,7 +157,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
 
-    private void setKeyToSpeed(char key, boolean pressed) {
+    private void setKeyPressed(char key, boolean pressed) {
         switch (Character.toLowerCase(key)) {
             case 'w':
                 W = pressed;
@@ -184,14 +184,14 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
         if (e.getKeyCode() == VK_SHIFT) isRunning = true;
-        else setKeyToSpeed(key, true);
+        else setKeyPressed(key, true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         char key = e.getKeyChar();
         if (e.getKeyCode() == VK_SHIFT) isRunning = false;
-        else setKeyToSpeed(key, false);
+        else setKeyPressed(key, false);
     }
 
 
