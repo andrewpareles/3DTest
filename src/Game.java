@@ -27,7 +27,7 @@ public class Game extends JPanel {
 
 
     private static ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-            new Cube(5, 0, 0, 0), new Cube(1, 10, 10, 10)
+            new Cube(5, 0, 0, 0)
     ));
 
     public static void main(String[] args) throws InterruptedException {
@@ -48,9 +48,9 @@ public class Game extends JPanel {
             //NOTE: percent/fps = percent per frame
 
 
-            //surfaces.get(0).shiftBy(new GameVector(0, 0, .1));
-            //surfaces.get(0).rotateBy(new GameVector(10, 5, 0), new GameVector(0, 2, 1), .05);
-            //surfaces.get(0).scaleBy(new GameVector(10, 5, -5), (10 / 100d) * (1 / fps));
+//            objects.get(0).shiftBy(new GameVector(0, 0, .1));
+//            objects.get(0).rotateBy(new GameVector(0, 0, 0), new GameVector(0, 2, 0), .005);
+//            objects.get(0).scaleBy(GameVector.ZERO, (10 / 100d) * (1 / fps));
         }
 
     }

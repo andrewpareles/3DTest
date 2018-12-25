@@ -51,7 +51,6 @@ public class GameSurface {
     public void scaleBy(GameVector focus, double percentChange) {
         for (int i = 0; i < surfaceBounds.size(); i++)
             surfaceBounds.set(i, surfaceBounds.get(i).scaleBy(focus, percentChange));
-
     }
 
 

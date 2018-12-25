@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,5 +20,20 @@ public abstract class GameObject {
             sum = sum.plus(s.getAverageSurfaceVector());
         sum = sum.times(1.0 / surfaces.size());
         return sum;
+    }
+
+    public void shiftBy(GameVector shiftAmount) {
+        for (int i = 0; i < surfaces.size(); i++)
+            surfaces.get(i).shiftBy(shiftAmount);
+    }
+
+    public void rotateBy(GameVector focus, GameVector axis, double theta) {
+        for (int i = 0; i < surfaces.size(); i++)
+            surfaces.get(i).rotateBy(focus, axis, theta);
+    }
+
+    public void scaleBy(GameVector focus, double percentChange) {
+        for (int i = 0; i < surfaces.size(); i++)
+            surfaces.get(i).scaleBy(focus, percentChange);
     }
 }
