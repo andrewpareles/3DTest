@@ -17,7 +17,6 @@ public class GameVector {
         this.z = z;
     }
 
-
     public double dot(GameVector v) {
         return x * v.x + y * v.y + z * v.z;
     }

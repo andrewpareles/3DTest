@@ -2,6 +2,7 @@ import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,48 +26,9 @@ public class Game extends JPanel {
     private static Player p = new Player();
 
 
-    private static ArrayList<GameSurface> surfaces = new ArrayList<>(Arrays.asList(
-            // wall, xs position
-            new GameSurface(
-                    new GameVector(5, -5, -5),
-                    new GameVector(5, -5, 5),
-                    new GameVector(5, 5, 5),
-                    new GameVector(5, 5, -5)
-            ).setColor(new Color(120, 32, 6)),
-            new GameSurface(
-                    new GameVector(-5, -5, -5),
-                    new GameVector(-5, -5, 5),
-                    new GameVector(-5, 5, 5),
-                    new GameVector(-5, 5, -5)
-            ).setColor(new Color(120, 32, 6)),
-            //floor, zs position
-            new GameSurface(
-                    new GameVector(-5, -5, 5),
-                    new GameVector(-5, 5, 5),
-                    new GameVector(5, 5, 5),
-                    new GameVector(5, -5, 5)
-            ).setColor(new Color(0, 17, 255)),
-            new GameSurface(
-                    new GameVector(-5, -5, -5),
-                    new GameVector(-5, 5, -5),
-                    new GameVector(5, 5, -5),
-                    new GameVector(5, -5, -5)
-            ).setColor(new Color(0, 17, 255)),
-            // wall, ys position
-            new GameSurface(
-                    new GameVector(-5, 5, -5),
-                    new GameVector(-5, 5, 5),
-                    new GameVector(5, 5, 5),
-                    new GameVector(5, 5, -5)
-            ).setColor(new Color(21, 255, 0)),
-            new GameSurface(
-                    new GameVector(-5, -5, -5),
-                    new GameVector(-5, -5, 5),
-                    new GameVector(5, -5, 5),
-                    new GameVector(5, -5, -5)
-            ).setColor(new Color(21, 255, 0))
+    private static ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
+            new Cube(5, 0, 0, 0), new Cube(1, 10, 10, 10)
     ));
-
 
     public static void main(String[] args) throws InterruptedException {
         frame.addKeyListener(p);
@@ -75,19 +37,11 @@ public class Game extends JPanel {
 
 
         while (true) {
-            surfaces.sort((o1, o2) -> {
-                double compare = o1.getAverageSurfaceVector().distance(p.getPosition()) -
-                        o2.getAverageSurfaceVector().distance(p.getPosition());
-                return compare == 0 ? 0 : compare < 0 ? 1 : -1;
-            });
-
             Graphics g = frame.getGraphics();
             g.clearRect(0, 0, WIDTH, HEIGHT);
-            for (GameSurface s : surfaces)
-                drawSurface(p, s, g);
+            drawObjects(p, objects, g);
 
             p.moveInDirection(p.getTotalVelocity().times(1 / fps));
-
             Thread.sleep(1000 / (long) fps);
 
             //NOTE: speed/fps = distance per frame
@@ -100,6 +54,30 @@ public class Game extends JPanel {
         }
 
     }
+
+    public static void drawObjects(Player p, ArrayList<GameObject> objects, Graphics g) {
+        objects.sort((o1, o2) -> {
+            double compare = o1.getAverageSurfaceVector().distance(p.getPosition()) -
+                    o2.getAverageSurfaceVector().distance(p.getPosition());
+            return compare == 0 ? 0 : compare < 0 ? 1 : -1;
+        });
+
+        for (GameObject o : objects)
+            drawObject(p, o, g);
+
+    }
+
+    public static void drawObject(Player p, GameObject o, Graphics g) {
+        ArrayList<GameSurface> surfaces = o.getSurfaces();
+        surfaces.sort((o1, o2) -> {
+            double compare = o1.getAverageSurfaceVector().distance(p.getPosition()) -
+                    o2.getAverageSurfaceVector().distance(p.getPosition());
+            return compare == 0 ? 0 : compare < 0 ? 1 : -1;
+        });
+        for (GameSurface s : surfaces)
+            drawSurface(p, s, g);
+    }
+
 
     public static void drawSurface(Player p, GameSurface s, Graphics g) {
         int numPoints = s.getNumPoints();

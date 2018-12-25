@@ -94,6 +94,11 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         return position;
     }
 
+    public GameVector getView() {
+        return view;
+    }
+
+
     public Pair<Integer, Integer> getCoordinatesOfPointOnScreen(GameVector P1) {
 
         GameVector v = view;
