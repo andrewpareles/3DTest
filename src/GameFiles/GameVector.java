@@ -1,4 +1,4 @@
-import java.awt.*;
+package GameFiles;
 
 import static java.lang.Math.*;
 
@@ -58,7 +58,7 @@ public class GameVector {
         return this.dot(this);
     }
 
-    public double distance(GameVector v) {
+    public double distanceTo(GameVector v) {
         return this.minus(v).length();
     }
 

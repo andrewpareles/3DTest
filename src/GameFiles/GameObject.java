@@ -1,3 +1,5 @@
+package GameFiles;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,7 +9,6 @@ public abstract class GameObject {
 
     public GameObject(GameSurface... s) {
         surfaces.addAll(Arrays.asList(s));
-
     }
 
     public ArrayList<GameSurface> getSurfaces() {

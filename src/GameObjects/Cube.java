@@ -1,6 +1,8 @@
+package GameObjects;
+
+import GameFiles.*;
+
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Cube extends GameObject {
 

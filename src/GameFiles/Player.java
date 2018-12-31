@@ -1,3 +1,5 @@
+package GameFiles;
+
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -24,12 +26,12 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     // phi is from -pi/2 to pi/2
     private double phi = phiDefault;
 
-    private final GameVector positionDefault = new GameVector(0, 0, 0);
+    private final GameVector positionDefault = GameVector.ZERO;
     private GameVector position = positionDefault;
 
     private GameVector view;
     // velocity DOES NOT incorporate walking speed
-    private GameVector velocity = new GameVector(0, 0, 0);
+    private GameVector velocity = GameVector.ZERO;
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
 
@@ -93,11 +95,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     public GameVector getPosition() {
         return position;
     }
-
-    public GameVector getView() {
-        return view;
-    }
-
 
     public Pair<Integer, Integer> getCoordinatesOfPointOnScreen(GameVector P1) {
 
@@ -170,7 +167,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         this.velocity = velocity;
     }
 
-
     private void setKeyPressed(char key, boolean pressed) {
         switch (Character.toLowerCase(key)) {
             case 'w':
@@ -214,6 +210,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
     double dX, dY, prevX, prevY;
+
     @Override
     public void mousePressed(MouseEvent e) {
         prevX = e.getX();
@@ -242,7 +239,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     }
 
 
-
     private Robot initializeRobot() {
         Robot r = null;
         try {
@@ -252,6 +248,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         }
         return r;
     }
+
     private Robot robot = initializeRobot();
 
     @Override

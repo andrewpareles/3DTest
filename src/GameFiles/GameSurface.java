@@ -1,16 +1,22 @@
+package GameFiles;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameSurface {
+
     private ArrayList<GameVector> surfaceBounds = new ArrayList<>();
+    private Color color = new Color(0, 0, 0);
 
-    private Color color;
-
-    public GameSurface(GameVector... vectors) {
-        surfaceBounds.addAll(Arrays.asList(vectors));
-        this.color = new Color(0, 0, 0);
+    public GameSurface(GameVector p1, GameVector p2, GameVector p3) {
+        surfaceBounds.addAll(Arrays.asList(p1, p2, p3));
     }
+
+    public GameSurface(GameVector p1, GameVector p2, GameVector p3, GameVector p4) {
+        surfaceBounds.addAll(Arrays.asList(p1, p2, p3, p4));
+    }
+
 
     public Color getColor() {
         return color;
@@ -25,6 +31,7 @@ public class GameSurface {
         return surfaceBounds.get(n);
     }
 
+    // Either 3 or 4
     public int getNumPoints() {
         return surfaceBounds.size();
     }

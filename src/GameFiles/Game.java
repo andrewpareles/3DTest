@@ -1,8 +1,10 @@
+package GameFiles;
+
+import GameObjects.Cube;
 import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,7 +14,7 @@ public class Game extends JPanel {
 
     final static int WIDTH = 1600;
     final static int HEIGHT = 1000;
-    private final static double fps = 60;
+    private final static double fps = 20;
 
     private static JFrame frame = new JFrame();
 
@@ -27,7 +29,17 @@ public class Game extends JPanel {
 
 
     private static ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-            new Cube(5, 0, 0, 0)
+            new Cube(5, 0, 0, 0),
+            new Cube(1, 6, 6, 6),
+            new Cube(1, 6, 6, -6),
+            new Cube(1, 6, -6, 6),
+            new Cube(1, 6, -6, -6),
+            new Cube(1, -6, 6, 6),
+            new Cube(1, -6, 6, -6),
+            new Cube(1, -6, -6, 6),
+            new Cube(1, -6, -6, -6)
+
+
     ));
 
     public static void main(String[] args) throws InterruptedException {
@@ -35,30 +47,30 @@ public class Game extends JPanel {
         frame.addMouseListener(p);
         frame.addMouseMotionListener(p);
 
-
         while (true) {
+            p.moveInDirection(p.getTotalVelocity().times(1 / fps));
+
             Graphics g = frame.getGraphics();
             g.clearRect(0, 0, WIDTH, HEIGHT);
             drawObjects(p, objects, g);
 
-            p.moveInDirection(p.getTotalVelocity().times(1 / fps));
             Thread.sleep(1000 / (long) fps);
 
             //NOTE: speed/fps = distance per frame
             //NOTE: percent/fps = percent per frame
 
 
-//            objects.get(0).shiftBy(new GameVector(0, 0, .1));
-//            objects.get(0).rotateBy(new GameVector(0, 0, 0), new GameVector(0, 2, 0), .005);
-//            objects.get(0).scaleBy(GameVector.ZERO, (10 / 100d) * (1 / fps));
+//            objects.get(8).shiftBy(objects.get(8).getAverageSurfaceVector().minus(p.getPosition()).normalize().times(1 / objects.get(8).getAverageSurfaceVector().length()));
+//            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
+//            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
         }
 
     }
 
     public static void drawObjects(Player p, ArrayList<GameObject> objects, Graphics g) {
         objects.sort((o1, o2) -> {
-            double compare = o1.getAverageSurfaceVector().distance(p.getPosition()) -
-                    o2.getAverageSurfaceVector().distance(p.getPosition());
+            double compare = o1.getAverageSurfaceVector().distanceTo(p.getPosition()) -
+                    o2.getAverageSurfaceVector().distanceTo(p.getPosition());
             return compare == 0 ? 0 : compare < 0 ? 1 : -1;
         });
 
@@ -70,8 +82,8 @@ public class Game extends JPanel {
     public static void drawObject(Player p, GameObject o, Graphics g) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
-            double compare = o1.getAverageSurfaceVector().distance(p.getPosition()) -
-                    o2.getAverageSurfaceVector().distance(p.getPosition());
+            double compare = o1.getAverageSurfaceVector().distanceTo(p.getPosition()) -
+                    o2.getAverageSurfaceVector().distanceTo(p.getPosition());
             return compare == 0 ? 0 : compare < 0 ? 1 : -1;
         });
         for (GameSurface s : surfaces)
