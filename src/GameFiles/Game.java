@@ -74,11 +74,11 @@ public class Game extends JFrame implements ActionListener {
 
     @Override
     public void repaint() {
-        drawObjects(p, objects);
+        drawObjects();
 
     }
 
-    private void drawObjects(Player p, ArrayList<GameObject> objects) {
+    private void drawObjects() {
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -86,11 +86,11 @@ public class Game extends JFrame implements ActionListener {
         });
 
         for (GameObject o : objects)
-            drawObject(p, o);
+            drawObject(o);
 
     }
 
-    private void drawObject(Player p, GameObject o) {
+    private void drawObject(GameObject o) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
             double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
@@ -99,11 +99,11 @@ public class Game extends JFrame implements ActionListener {
         });
 
         for (GameSurface s : surfaces)
-            drawSurface(p, s);
+            drawSurface(s);
     }
 
 
-    private void drawSurface(Player p, GameSurface s) {
+    private void drawSurface(GameSurface s) {
         int numPoints = s.getNumPoints();
 
         int[] xs = new int[numPoints];
