@@ -12,12 +12,13 @@ import java.util.Arrays;
 
 import static java.lang.Math.round;
 
+
 public class Game extends JPanel implements ActionListener {
+
     final static int WIDTH = 1600;
     final static int HEIGHT = 1000;
-    private final double fps = 20;
+    private final double fps = 60;
 
-    private Timer timer;
     private JFrame frame = new JFrame();
 
     private Player p = new Player();
@@ -32,8 +33,9 @@ public class Game extends JPanel implements ActionListener {
         frame.addMouseListener(p);
         frame.addMouseMotionListener(p);
 
-        timer = new Timer((int) (1000 / fps), this);
+        Timer timer = new Timer((int) (1000 / fps), this);
         timer.start();
+
     }
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
@@ -48,22 +50,11 @@ public class Game extends JPanel implements ActionListener {
             new Cube(1, -6, -6, -6)
     ));
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         new Game();
-//        game.frame.getContentPane().add(game);
-//        game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        game.frame.setSize(WIDTH, HEIGHT);
-//        game.frame.setVisible(true);
-//
-//        game.frame.addKeyListener(game.p);
-//        game.frame.addMouseListener(game.p);
-//        game.frame.addMouseMotionListener(game.p);
-
     }
-
-
+    
     public void actionPerformed(ActionEvent e) {
-
         p.moveInDirection(p.getTotalVelocity().times(1 / fps));
 
         //            g.clearRect(0, 0, WIDTH, HEIGHT);
@@ -75,11 +66,17 @@ public class Game extends JPanel implements ActionListener {
 //            objects.get(8).shiftBy(objects.get(8).getCenterOfObject().minus(p.getPosition()).normalize().times(1 / objects.get(8).getCenterOfObject().length()));
 //            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
+
+        frame.getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
+        repaint();
     }
 
     @Override
     public void repaint() {
-        drawObjects(p, objects);
+        try {
+            drawObjects(p, objects);
+        } catch (Exception e) {
+        }
     }
 
     public void drawObjects(Player p, ArrayList<GameObject> objects) {
