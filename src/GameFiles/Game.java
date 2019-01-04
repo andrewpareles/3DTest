@@ -5,30 +5,38 @@ import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.round;
 
-public class Game extends JPanel {
-
+public class Game extends JPanel implements ActionListener {
     final static int WIDTH = 1600;
     final static int HEIGHT = 1000;
-    private final static double fps = 20;
+    private final double fps = 20;
 
-    private static JFrame frame = new JFrame();
+    private Timer timer;
+    private JFrame frame = new JFrame();
 
-    static {
-        frame.getContentPane().add(new Game());
+    private Player p = new Player();
+
+    private Game() {
+        frame.getContentPane().add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(WIDTH, HEIGHT);
         frame.setVisible(true);
+
+        frame.addKeyListener(p);
+        frame.addMouseListener(p);
+        frame.addMouseMotionListener(p);
+
+        timer = new Timer((int) (1000 / fps), this);
+        timer.start();
     }
 
-    private static Player p = new Player();
-
-
-    private static ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
+    private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
             new Cube(5, 0, 0, 0),
             new Cube(1, 6, 6, 6),
             new Cube(1, 6, 6, -6),
@@ -41,31 +49,40 @@ public class Game extends JPanel {
     ));
 
     public static void main(String[] args) throws InterruptedException {
-        frame.addKeyListener(p);
-        frame.addMouseListener(p);
-        frame.addMouseMotionListener(p);
+        new Game();
+//        game.frame.getContentPane().add(game);
+//        game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        game.frame.setSize(WIDTH, HEIGHT);
+//        game.frame.setVisible(true);
+//
+//        game.frame.addKeyListener(game.p);
+//        game.frame.addMouseListener(game.p);
+//        game.frame.addMouseMotionListener(game.p);
 
-        while (true) {
-            p.moveInDirection(p.getTotalVelocity().times(1 / fps));
+    }
 
-            Graphics g = frame.getGraphics();
-            g.clearRect(0, 0, WIDTH, HEIGHT);
-            drawObjects(p, objects, g);
 
-            Thread.sleep(1000 / (long) fps);
+    public void actionPerformed(ActionEvent e) {
 
-            //NOTE: speed/fps = distance per frame
-            //NOTE: percent/fps = percent per frame
+        p.moveInDirection(p.getTotalVelocity().times(1 / fps));
 
+        //            g.clearRect(0, 0, WIDTH, HEIGHT);
+//            frame.repaint();
+
+        //NOTE: speed/fps = distance per frame
+        //NOTE: percent/fps = percent per frame
 
 //            objects.get(8).shiftBy(objects.get(8).getCenterOfObject().minus(p.getPosition()).normalize().times(1 / objects.get(8).getCenterOfObject().length()));
 //            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
-        }
-
     }
 
-    public static void drawObjects(Player p, ArrayList<GameObject> objects, Graphics g) {
+    @Override
+    public void repaint() {
+        drawObjects(p, objects);
+    }
+
+    public void drawObjects(Player p, ArrayList<GameObject> objects) {
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -73,11 +90,11 @@ public class Game extends JPanel {
         });
 
         for (GameObject o : objects)
-            drawObject(p, o, g);
+            drawObject(p, o);
 
     }
 
-    public static void drawObject(Player p, GameObject o, Graphics g) {
+    public void drawObject(Player p, GameObject o) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
             double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
@@ -86,11 +103,11 @@ public class Game extends JPanel {
         });
 
         for (GameSurface s : surfaces)
-            drawSurface(p, s, g);
+            drawSurface(p, s);
     }
 
 
-    public static void drawSurface(Player p, GameSurface s, Graphics g) {
+    public void drawSurface(Player p, GameSurface s) {
         int numPoints = s.getNumPoints();
 
         int[] xs = new int[numPoints];
@@ -104,9 +121,9 @@ public class Game extends JPanel {
             ys[i] = coordinates.getValue();
         }
 
+        Graphics g = frame.getGraphics();
         g.setColor(s.getColor());
         g.fillPolygon(xs, ys, numPoints);
-
     }
 
 
