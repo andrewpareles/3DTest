@@ -1,12 +1,21 @@
 package GameFiles;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 //a collection of surfaces
 public abstract class GameObject {
+    // any number of surfaces
     private ArrayList<GameSurface> surfaces = new ArrayList<>();
 
+    // takes in a list of ArrayList<GameSurface>, useful for GameSurface.createSurface(...)
+    public GameObject(ArrayList<GameSurface>... lsts) {
+        for (ArrayList<GameSurface> s : lsts)
+            surfaces.addAll(s);
+    }
+
+    // takes in a list of GameSurfaces
     public GameObject(GameSurface... s) {
         surfaces.addAll(Arrays.asList(s));
     }
@@ -15,12 +24,8 @@ public abstract class GameObject {
         return surfaces;
     }
 
-    public GameVector getAverageSurfaceVector() {
-        GameVector sum = GameVector.ZERO;
-        for (GameSurface s : surfaces)
-            sum = sum.plus(s.getAverageSurfaceVector());
-        sum = sum.times(1.0 / surfaces.size());
-        return sum;
+    public GameVector getCenterOfObject() {
+        return Helpers.AverageVector.getAverageObjectVector(this.surfaces);
     }
 
     public void shiftBy(GameVector shiftAmount) {

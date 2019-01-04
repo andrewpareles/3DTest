@@ -38,8 +38,6 @@ public class Game extends JPanel {
             new Cube(1, -6, 6, -6),
             new Cube(1, -6, -6, 6),
             new Cube(1, -6, -6, -6)
-
-
     ));
 
     public static void main(String[] args) throws InterruptedException {
@@ -60,7 +58,7 @@ public class Game extends JPanel {
             //NOTE: percent/fps = percent per frame
 
 
-//            objects.get(8).shiftBy(objects.get(8).getAverageSurfaceVector().minus(p.getPosition()).normalize().times(1 / objects.get(8).getAverageSurfaceVector().length()));
+//            objects.get(8).shiftBy(objects.get(8).getCenterOfObject().minus(p.getPosition()).normalize().times(1 / objects.get(8).getCenterOfObject().length()));
 //            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
         }
@@ -69,8 +67,8 @@ public class Game extends JPanel {
 
     public static void drawObjects(Player p, ArrayList<GameObject> objects, Graphics g) {
         objects.sort((o1, o2) -> {
-            double compare = o1.getAverageSurfaceVector().distanceTo(p.getPosition()) -
-                    o2.getAverageSurfaceVector().distanceTo(p.getPosition());
+            double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
+                    o2.getCenterOfObject().distanceTo(p.getPosition());
             return compare == 0 ? 0 : compare < 0 ? 1 : -1;
         });
 
@@ -82,10 +80,11 @@ public class Game extends JPanel {
     public static void drawObject(Player p, GameObject o, Graphics g) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
-            double compare = o1.getAverageSurfaceVector().distanceTo(p.getPosition()) -
-                    o2.getAverageSurfaceVector().distanceTo(p.getPosition());
+            double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
+                    o2.getCenterOfSurface().distanceTo(p.getPosition());
             return compare == 0 ? 0 : compare < 0 ? 1 : -1;
         });
+
         for (GameSurface s : surfaces)
             drawSurface(p, s, g);
     }

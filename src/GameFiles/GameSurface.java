@@ -1,22 +1,29 @@
 package GameFiles;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameSurface {
 
+    //RI: size of surfaceBounds = 3
     private ArrayList<GameVector> surfaceBounds = new ArrayList<>();
-    private Color color = new Color(0, 0, 0);
+    private Color color;
 
-    public GameSurface(GameVector p1, GameVector p2, GameVector p3) {
+    private GameSurface(Color color, GameVector p1, GameVector p2, GameVector p3) {
         surfaceBounds.addAll(Arrays.asList(p1, p2, p3));
+        this.color = color;
     }
 
-    public GameSurface(GameVector p1, GameVector p2, GameVector p3, GameVector p4) {
-        surfaceBounds.addAll(Arrays.asList(p1, p2, p3, p4));
+    //p1 is the pivot point, all the surfaces returned are based on it, ie new GameSurface(p1, p_n, p_n+1)
+    public static ArrayList<GameSurface> createSurface(Color color, GameVector p1, GameVector p2, GameVector p3, GameVector... ps) {
+        ArrayList<GameSurface> surfaces = new ArrayList<>();
+        surfaces.add(new GameSurface(color, p1, p2, p3));
+        if (ps.length >= 1) surfaces.add(new GameSurface(color, p1, p3, ps[0])); // p1 p3 p4
+        for (int i = 1; i < ps.length - 1; i++) surfaces.add(new GameSurface(color, p1, ps[i], ps[i + 1]));
+        return surfaces;
     }
-
 
     public Color getColor() {
         return color;
@@ -36,13 +43,8 @@ public class GameSurface {
         return surfaceBounds.size();
     }
 
-    public GameVector getAverageSurfaceVector() {
-        GameVector sum = GameVector.ZERO;
-        for (GameVector v : surfaceBounds)
-            sum = sum.plus(v);
-        sum = sum.times(1.0 / surfaceBounds.size());
-
-        return sum;
+    public GameVector getCenterOfSurface() {
+        return Helpers.AverageVector.getAverageSurfaceVector(this.surfaceBounds);
     }
 
     public void shiftBy(GameVector shiftAmount) {
