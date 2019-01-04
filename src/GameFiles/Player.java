@@ -35,10 +35,10 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
 
-    private final double WALK_SPEED = 5;
-    private final double RUN_SPEED = 100;
+    private final double WALK_SPEED = 50;
+    private final double CROUCH_SPEED = 10;
 
-    private boolean isRunning = false;
+    private boolean isCrouching = false;
 
     private final double xSens = 5;
     private final double ySens = 5;
@@ -96,7 +96,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         return position;
     }
 
-    public Pair<Integer, Integer> getCoordinatesOfPointOnScreen(GameVector P1) {
+    public Pair<Boolean, Pair<Integer, Integer>> getCoordinatesOfPointOnScreen(GameVector P1) {
 
         GameVector v = view;
         GameVector P = position;
@@ -104,7 +104,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
 
         double t = v.dot(v) / v.dot(PtoP1);
         //if behind or in you
-        if (t <= 0) return null;
+        boolean pointIsBehindPlayer = t <= 0;
 
         //point on plane:
         GameVector Pt = P.plus(PtoP1.times(t));
@@ -141,7 +141,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         int X = Game.toComputerCoordinateSystemX(x);
         int Y = Game.toComputerCoordinateSystemY(y);
 
-        return new Pair<>(X, Y);
+        return new Pair<>(pointIsBehindPlayer, new Pair<>(X, Y));
     }
 
     public GameVector getTotalVelocity() {
@@ -152,7 +152,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         GameVector q = GameVector.Z;
         GameVector e = q.negate();
 
-        double speed = isRunning ? RUN_SPEED : WALK_SPEED;
+        double speed = isCrouching ? CROUCH_SPEED : WALK_SPEED;
         w = W ? w.times(speed) : GameVector.ZERO;
         a = A ? a.times(speed) : GameVector.ZERO;
         s = S ? s.times(speed) : GameVector.ZERO;
@@ -193,14 +193,14 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
-        if (e.getKeyCode() == VK_SHIFT) isRunning = true;
+        if (e.getKeyCode() == VK_SHIFT) isCrouching = true;
         else setKeyPressed(key, true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         char key = e.getKeyChar();
-        if (e.getKeyCode() == VK_SHIFT) isRunning = false;
+        if (e.getKeyCode() == VK_SHIFT) isCrouching = false;
         else setKeyPressed(key, false);
     }
 

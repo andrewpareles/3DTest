@@ -36,18 +36,6 @@ public class Game extends JFrame implements ActionListener {
     ));
 
 
-    @Override
-    public void repaint() {
-        drawObjects();
-    }
-//    @Override
-//    public void update(Graphics g) {
-//    }
-//
-//    @Override
-//    public void paint(Graphics g) {
-//    }
-
     private Game() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -87,6 +75,10 @@ public class Game extends JFrame implements ActionListener {
         repaint();
     }
 
+    @Override
+    public void repaint() {
+        drawObjects();
+    }
 
     private void drawObjects() {
         Image img = createImage(WIDTH, HEIGHT);
@@ -122,18 +114,22 @@ public class Game extends JFrame implements ActionListener {
 
         int[] xs = new int[numPoints];
         int[] ys = new int[numPoints];
-
+        boolean[] bs = new boolean[numPoints];
+        boolean existsPointInFront = false;
         for (int i = 0; i < numPoints; i++) {
-            Pair<Integer, Integer> coordinates = p.getCoordinatesOfPointOnScreen(s.getPoint(i));
-            if (coordinates == null) return;
-
+            Pair<Boolean, Pair<Integer, Integer>> result = p.getCoordinatesOfPointOnScreen(s.getPoint(i));
+            existsPointInFront = !result.getKey() || existsPointInFront;
+            Pair<Integer, Integer> coordinates = result.getValue();
+//TODO
             xs[i] = coordinates.getKey();
             ys[i] = coordinates.getValue();
         }
 
-        Graphics imgGraphics = img.getGraphics();
-        imgGraphics.setColor(s.getColor());
-        imgGraphics.fillPolygon(xs, ys, numPoints);
+        if (existsPointInFront) {
+            Graphics imgGraphics = img.getGraphics();
+            imgGraphics.setColor(s.getColor());
+            imgGraphics.fillPolygon(xs, ys, numPoints);
+        }
     }
 
 

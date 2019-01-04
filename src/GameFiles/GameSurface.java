@@ -11,18 +11,25 @@ public class GameSurface {
     private ArrayList<GameVector> surfaceBounds = new ArrayList<>();
     private Color color;
 
-    private GameSurface(Color color, GameVector p1, GameVector p2, GameVector p3) {
-        surfaceBounds.addAll(Arrays.asList(p1, p2, p3));
+    private GameSurface(Color color, GameVector... ps) {
+        surfaceBounds.addAll(Arrays.asList(ps));
         this.color = color;
     }
 
-    //p1 is the pivot point, all the surfaces returned are based on it, ie new GameSurface(p1, p_n, p_n+1)
-    public static ArrayList<GameSurface> createSurface(Color color, GameVector p1, GameVector p2, GameVector p3, GameVector... ps) {
+    //f is the pivot point, all the surfaces returned are based on it, ie new GameSurface(f, p_n, p_n+1)
+    public static ArrayList<GameSurface> createSurface(Color color, GameVector f, GameVector p2, GameVector p3, GameVector... pn) {
         ArrayList<GameSurface> surfaces = new ArrayList<>();
-        surfaces.add(new GameSurface(color, p1, p2, p3));
-        if (ps.length >= 1) surfaces.add(new GameSurface(color, p1, p3, ps[0])); // p1 p3 p4
-        for (int i = 1; i < ps.length - 1; i++) surfaces.add(new GameSurface(color, p1, ps[i], ps[i + 1]));
+        surfaces.add(new GameSurface(color, f, p2, p3));
+        if (pn.length >= 1) surfaces.add(new GameSurface(color, f, p3, pn[0])); // f p3 p4
+        for (int i = 1; i < pn.length - 1; i++) surfaces.add(new GameSurface(color, f, pn[i], pn[i + 1]));
         return surfaces;
+    }
+
+    //creates a polygon
+    public static ArrayList<GameSurface> createSurface(Color color, GameVector position, GameVector normal, int numSides) {
+        ArrayList<GameSurface> surfaces = new ArrayList<>();
+        surfaces.add();
+//TODO
     }
 
     public Color getColor() {
