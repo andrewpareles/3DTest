@@ -68,14 +68,13 @@ public class Game extends JFrame implements ActionListener {
 //            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
 
-        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
+//        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
         repaint();
     }
 
     @Override
     public void repaint() {
         drawObjects();
-
     }
 
     private void drawObjects() {
