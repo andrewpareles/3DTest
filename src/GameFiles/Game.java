@@ -19,7 +19,7 @@ public class Game extends JFrame implements ActionListener {
     final static int WIDTH = 1600;
     final static int HEIGHT = 1000;
     private final double fps = 60;
-    
+
     private Player p = new Player();
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
@@ -74,11 +74,8 @@ public class Game extends JFrame implements ActionListener {
 
     @Override
     public void repaint() {
-        try {
-            drawObjects(p, objects);
-        } catch (Exception e) {
-            System.out.println("EXCEPTION: " + e.getMessage());
-        }
+        drawObjects(p, objects);
+
     }
 
     private void drawObjects(Player p, ArrayList<GameObject> objects) {
