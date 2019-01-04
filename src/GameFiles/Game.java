@@ -8,6 +8,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,17 +35,29 @@ public class Game extends JFrame implements ActionListener {
             new Cube(1, -6, -6, -6)
     ));
 
+
+    @Override
+    public void repaint() {
+        drawObjects();
+    }
+//    @Override
+//    public void update(Graphics g) {
+//    }
+//
+//    @Override
+//    public void paint(Graphics g) {
+//    }
+
     private Game() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setTitle("3DGame");
         setVisible(true);
-//        setIgnoreRepaint(true);
-
 
         addKeyListener(p);
         addMouseListener(p);
         addMouseMotionListener(p);
+
 
         Timer timer = new Timer((int) (1000 / fps), this);
         timer.start();
@@ -55,7 +68,9 @@ public class Game extends JFrame implements ActionListener {
         new Game();
     }
 
+
     public void actionPerformed(ActionEvent e) {
+
         p.moveInDirection(p.getTotalVelocity().times(1 / fps));
 
         //            g.clearRect(0, 0, WIDTH, HEIGHT);
@@ -72,12 +87,10 @@ public class Game extends JFrame implements ActionListener {
         repaint();
     }
 
-    @Override
-    public void repaint() {
-        drawObjects();
-    }
 
     private void drawObjects() {
+        Image img = createImage(WIDTH, HEIGHT);
+
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -85,11 +98,13 @@ public class Game extends JFrame implements ActionListener {
         });
 
         for (GameObject o : objects)
-            drawObject(o);
+            drawObject(o, img);
+
+        getGraphics().drawImage(img, 0, 0, this);
 
     }
 
-    private void drawObject(GameObject o) {
+    private void drawObject(GameObject o, Image img) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
             double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
@@ -98,11 +113,11 @@ public class Game extends JFrame implements ActionListener {
         });
 
         for (GameSurface s : surfaces)
-            drawSurface(s);
+            drawSurface(s, img);
     }
 
 
-    private void drawSurface(GameSurface s) {
+    private void drawSurface(GameSurface s, Image img) {
         int numPoints = s.getNumPoints();
 
         int[] xs = new int[numPoints];
@@ -116,9 +131,9 @@ public class Game extends JFrame implements ActionListener {
             ys[i] = coordinates.getValue();
         }
 
-        Graphics g = getGraphics();
-        g.setColor(s.getColor());
-        g.fillPolygon(xs, ys, numPoints);
+        Graphics imgGraphics = img.getGraphics();
+        imgGraphics.setColor(s.getColor());
+        imgGraphics.fillPolygon(xs, ys, numPoints);
     }
 
 
