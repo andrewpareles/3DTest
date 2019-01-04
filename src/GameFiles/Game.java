@@ -4,6 +4,7 @@ import GameObjects.Cube;
 import javafx.util.Pair;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,30 +14,13 @@ import java.util.Arrays;
 import static java.lang.Math.round;
 
 
-public class Game extends JPanel implements ActionListener {
+public class Game extends JFrame implements ActionListener {
 
     final static int WIDTH = 1600;
     final static int HEIGHT = 1000;
     private final double fps = 60;
-
-    private JFrame frame = new JFrame();
-
+    
     private Player p = new Player();
-
-    private Game() {
-        frame.getContentPane().add(this);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(WIDTH, HEIGHT);
-        frame.setVisible(true);
-
-        frame.addKeyListener(p);
-        frame.addMouseListener(p);
-        frame.addMouseMotionListener(p);
-
-        Timer timer = new Timer((int) (1000 / fps), this);
-        timer.start();
-
-    }
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
             new Cube(5, 0, 0, 0),
@@ -50,10 +34,27 @@ public class Game extends JPanel implements ActionListener {
             new Cube(1, -6, -6, -6)
     ));
 
+    private Game() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(WIDTH, HEIGHT);
+        setTitle("3DGame");
+        setVisible(true);
+//        setIgnoreRepaint(true);
+
+
+        addKeyListener(p);
+        addMouseListener(p);
+        addMouseMotionListener(p);
+
+        Timer timer = new Timer((int) (1000 / fps), this);
+        timer.start();
+
+    }
+
     public static void main(String[] args) {
         new Game();
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         p.moveInDirection(p.getTotalVelocity().times(1 / fps));
 
@@ -67,7 +68,7 @@ public class Game extends JPanel implements ActionListener {
 //            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
 
-        frame.getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
+        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
         repaint();
     }
 
@@ -76,10 +77,11 @@ public class Game extends JPanel implements ActionListener {
         try {
             drawObjects(p, objects);
         } catch (Exception e) {
+            System.out.println("EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void drawObjects(Player p, ArrayList<GameObject> objects) {
+    private void drawObjects(Player p, ArrayList<GameObject> objects) {
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -91,7 +93,7 @@ public class Game extends JPanel implements ActionListener {
 
     }
 
-    public void drawObject(Player p, GameObject o) {
+    private void drawObject(Player p, GameObject o) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
         surfaces.sort((o1, o2) -> {
             double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
@@ -104,7 +106,7 @@ public class Game extends JPanel implements ActionListener {
     }
 
 
-    public void drawSurface(Player p, GameSurface s) {
+    private void drawSurface(Player p, GameSurface s) {
         int numPoints = s.getNumPoints();
 
         int[] xs = new int[numPoints];
@@ -118,7 +120,7 @@ public class Game extends JPanel implements ActionListener {
             ys[i] = coordinates.getValue();
         }
 
-        Graphics g = frame.getGraphics();
+        Graphics g = getGraphics();
         g.setColor(s.getColor());
         g.fillPolygon(xs, ys, numPoints);
     }
