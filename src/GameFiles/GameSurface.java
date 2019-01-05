@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 public class GameSurface {
 
-    //RI: size of surfaceBounds = 3
     private ArrayList<GameVector> surfaceBounds = new ArrayList<>();
     private Color color;
 
@@ -28,8 +27,10 @@ public class GameSurface {
     //creates a polygon
     public static ArrayList<GameSurface> createSurface(Color color, GameVector position, GameVector normal, int numSides) {
         ArrayList<GameSurface> surfaces = new ArrayList<>();
-        surfaces.add();
+//        surfaces.add();
+        return surfaces;
 //TODO
+
     }
 
     public Color getColor() {
