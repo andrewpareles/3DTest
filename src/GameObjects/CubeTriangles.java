@@ -4,10 +4,10 @@ import GameFiles.*;
 
 import java.awt.*;
 
-public class Cube extends GameObject {
+public class CubeTriangles extends GameObject {
 
     //s is size, x y z is coords
-    public Cube(double s, double x, double y, double z) {
+    public CubeTriangles(double s, double x, double y, double z) {
 // wall, xs position
         super(
                 GameSurface.createSurface(new Color(120, 32, 6),

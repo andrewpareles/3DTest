@@ -123,7 +123,6 @@ public class GameVector {
 
     public boolean equals(Object o) {
         if (!(o instanceof GameVector)) return false;
-
         return ((GameVector) o).x() == x && ((GameVector) o).y() == y && (((GameVector) o).z() == z);
     }
 

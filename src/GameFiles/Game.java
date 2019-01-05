@@ -1,14 +1,13 @@
 package GameFiles;
 
-import GameObjects.Cube;
+import GameObjects.CubeSquares;
+import GameObjects.CubeTriangles;
 import javafx.util.Pair;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,15 +23,17 @@ public class Game extends JFrame implements ActionListener {
     private Player p = new Player();
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-            new Cube(5, 0, 0, 0),
-            new Cube(1, 6, 6, 6),
-            new Cube(1, 6, 6, -6),
-            new Cube(1, 6, -6, 6),
-            new Cube(1, 6, -6, -6),
-            new Cube(1, -6, 6, 6),
-            new Cube(1, -6, 6, -6),
-            new Cube(1, -6, -6, 6),
-            new Cube(1, -6, -6, -6)
+//            new CubeSquares(5, 0, 0, 0)
+            new CubeSquares(1, 6, 6, 6),
+            new CubeTriangles(1, 6, 6, 6)
+
+//            new CubeTriangles(1, 6, 6, -6),
+//            new CubeTriangles(1, 6, -6, 6),
+//            new CubeTriangles(1, 6, -6, -6),
+//            new CubeTriangles(1, -6, 6, 6),
+//            new CubeTriangles(1, -6, 6, -6),
+//            new CubeTriangles(1, -6, -6, 6),
+//            new CubeTriangles(1, -6, -6, -6)
     ));
 
 
@@ -45,7 +46,6 @@ public class Game extends JFrame implements ActionListener {
         addKeyListener(p);
         addMouseListener(p);
         addMouseMotionListener(p);
-
 
         Timer timer = new Timer((int) (1000 / fps), this);
         timer.start();

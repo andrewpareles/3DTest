@@ -24,13 +24,19 @@ public class GameSurface {
         return surfaces;
     }
 
-    //creates a polygon
-    public static ArrayList<GameSurface> createSurface(Color color, GameVector position, GameVector normal, int numSides) {
-        ArrayList<GameSurface> surfaces = new ArrayList<>();
-//        surfaces.add();
-        return surfaces;
-//TODO
+    //creates a polygon, center is the center of it, p1 is a point on the polygon, normal is normal to the surface
+    public static GameSurface createSurface(Color color, GameVector center, GameVector normal, GameVector p1, int numSides) {
+        GameVector r = p1.minus(center);
+        double changeAngle = 2 * Math.PI / numSides;
+        GameVector[] points = new GameVector[numSides];
 
+        points[0] = r;
+        for (int i = 1; i < numSides; i++) points[i] = points[i - 1].rotateBy(GameVector.ZERO, normal, changeAngle);
+
+        GameSurface s = new GameSurface(color, points);
+        s.shiftBy(center);
+
+        return s;
     }
 
     public Color getColor() {
