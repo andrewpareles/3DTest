@@ -26,7 +26,9 @@ public class Game extends JFrame implements ActionListener {
 //            new CubeSquares(5, 0, 0, 0)
             new CubeSquares(1, 6, 6, 6),
             new CubeTriangles(1, 6, 6, 6)
-
+//new GameObject(
+//        GameSurface.createSurface(new Color(0,0,0),GameVector.ZERO, new GameVector(1,1,1),GameVector.Z, 25 )
+//    )
 //            new CubeTriangles(1, 6, 6, -6),
 //            new CubeTriangles(1, 6, -6, 6),
 //            new CubeTriangles(1, 6, -6, -6),
@@ -46,6 +48,7 @@ public class Game extends JFrame implements ActionListener {
         addKeyListener(p);
         addMouseListener(p);
         addMouseMotionListener(p);
+        addMouseWheelListener(p);
 
         Timer timer = new Timer((int) (1000 / fps), this);
         timer.start();
@@ -59,7 +62,8 @@ public class Game extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
-        p.moveInDirection(p.getTotalVelocity().times(1 / fps));
+        p.move(fps);
+
 
         //            g.clearRect(0, 0, WIDTH, HEIGHT);
 //            frame.repaint();
@@ -81,6 +85,7 @@ public class Game extends JFrame implements ActionListener {
     }
 
     private void drawObjects() {
+
         Image img = createImage(WIDTH, HEIGHT);
 
         objects.sort((o1, o2) -> {
@@ -92,8 +97,15 @@ public class Game extends JFrame implements ActionListener {
         for (GameObject o : objects)
             drawObject(o, img);
 
-        getGraphics().drawImage(img, 0, 0, this);
+        //DRAW CROSSHAIR
+        int crosshairLength = p.getCrosshairLength();
+        int crosshairWidth = p.getCrosshairWidth();
+        Graphics g = img.getGraphics();
+        g.setColor(p.getCrosshairColor());
+        g.fillRect((WIDTH - crosshairLength) / 2, (HEIGHT - crosshairWidth) / 2, crosshairLength, crosshairWidth);
+        g.fillRect((WIDTH - crosshairWidth) / 2, (HEIGHT - crosshairLength) / 2, crosshairWidth, crosshairLength);
 
+        getGraphics().drawImage(img, 0, 0, this);
     }
 
     private void drawObject(GameObject o, Image img) {

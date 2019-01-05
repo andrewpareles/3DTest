@@ -8,7 +8,7 @@ import java.awt.event.*;
 import static java.awt.event.KeyEvent.VK_SHIFT;
 import static java.lang.Math.*;
 
-public class Player implements KeyListener, MouseMotionListener, MouseListener {
+public class Player implements KeyListener, MouseMotionListener, MouseListener, MouseWheelListener {
 
     //changing d doesn't alter anything unless VIEW_WIDTH and VIEW_HEIGHT are held constant (not dependent on angle)
     private final double d = 1;
@@ -29,14 +29,24 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     private final GameVector positionDefault = GameVector.ZERO;
     private GameVector position = positionDefault;
 
+    //view is always normal
     private GameVector view;
     // velocity DOES NOT incorporate walking speed
     private GameVector velocity = GameVector.ZERO;
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
 
-    private final double WALK_SPEED = 50;
-    private final double CROUCH_SPEED = 10;
+    private int crosshairLength = 30;
+    private int crosshairWidth = 2;
+    private Color crosshairColor = new Color(0, 224, 228);
+
+    // + for up, - for down
+    private int scrollCount = 0;
+    private double scrollSensitivity = 2;
+
+
+    private final double WALK_SPEED = 10;
+    private final double CROUCH_SPEED = 1;
 
     private boolean isCrouching = false;
 
@@ -49,6 +59,22 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     Player() {
         updatef();
         updateView();
+    }
+
+    public int getCrosshairLength(){
+        return  crosshairLength;
+    }
+
+    public int getCrosshairWidth(){
+        return crosshairWidth;
+    }
+    public Color getCrosshairColor(){
+        return crosshairColor;
+    }
+
+    public void move(double fps) {
+        moveInDirection(getTotalVelocity().times(1 / fps));
+        scrollCount = 0;
     }
 
     private void updatef() {
@@ -151,6 +177,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         GameVector d = a.negate();
         GameVector q = GameVector.Z;
         GameVector e = q.negate();
+        GameVector v = view;
 
         double speed = isCrouching ? CROUCH_SPEED : WALK_SPEED;
         w = W ? w.times(speed) : GameVector.ZERO;
@@ -159,8 +186,8 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         d = D ? d.times(speed) : GameVector.ZERO;
         q = Q ? q.times(speed) : GameVector.ZERO;
         e = E ? e.times(speed) : GameVector.ZERO;
-
-        return velocity.plus(w).plus(a).plus(s).plus(d).plus(q).plus(e);
+        v = v.times(scrollCount * speed * scrollSensitivity);
+        return velocity.plus(w).plus(a).plus(s).plus(d).plus(q).plus(e).plus(v);
     }
 
     private void setVelocity(GameVector velocity) {
@@ -202,6 +229,13 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
         char key = e.getKeyChar();
         if (e.getKeyCode() == VK_SHIFT) isCrouching = false;
         else setKeyPressed(key, false);
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        //- for up, + for down
+        if (e.getWheelRotation() < 0) scrollCount += 1; //UP
+        else scrollCount -= 1;//DOWN
     }
 
     @Override
@@ -274,4 +308,5 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
     }
+
 }

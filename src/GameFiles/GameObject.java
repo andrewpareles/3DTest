@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 //a collection of surfaces
-public abstract class GameObject {
+public class GameObject {
     // any number of surfaces
     private ArrayList<GameSurface> surfaces = new ArrayList<>();
 
