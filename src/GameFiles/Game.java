@@ -23,8 +23,8 @@ public class Game extends JFrame implements ActionListener {
     private Player p = new Player();
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-//            new CubeSquares(5, 0, 0, 0)
-            new CubeSquares(1, 6, 6, 6)
+            new CubeSquares(5, 0, 0, 0)
+//            new CubeSquares(1, 6, 6, 6)
 //            new CubeTriangles(1, 6, 6, 6)
 //new GameObject(
 //        GameSurface.createSurface(new Color(0,0,0),GameVector.ZERO, new GameVector(1,1,1),GameVector.Z, 25 )
@@ -126,39 +126,28 @@ public class Game extends JFrame implements ActionListener {
 
         int[] xs = new int[numPoints];
         int[] ys = new int[numPoints];
-        boolean[] bs = new boolean[numPoints];
+
+        boolean existsVisiblePoint = false;
 
         for (int i = 0; i < numPoints; i++) {
             Pair<Boolean, Pair<Integer, Integer>> result = p.getCoordinatesOfPointOnScreen(s.getPoint(i));
             Pair<Integer, Integer> coordinates = result.getValue();
 
-            bs[i] = result.getKey();
-            xs[i] = coordinates.getKey();
-            ys[i] = coordinates.getValue();
-        }
+            boolean canSeePoint = result.getKey();
 
-        for (int i = 0; i < bs.length; i++) {
-            int i1 = i == bs.length - 1 ? 0 : i;
-            int i2 = i == bs.length - 1 ? bs.length - 1 : i + 1;
-
-            if (bs[i1] && bs[i2]) {
-                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
-            } else if (bs[i1] && !bs[i2]) {
-                Pair<Integer, Integer> intersectPoints = p.getCoordinatesOfEdgeIntersectingScreen(s.getPoint(i1), s.getPoint(i2));
-                xs[i2] = intersectPoints.getKey();
-                ys[i2] = intersectPoints.getValue();
-                imgGraphics.drawOval(xs[i2], ys[i2], 500, 500);
-                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
+            if (canSeePoint) {
+                existsVisiblePoint = true;
+                xs[i] = coordinates.getKey();
+                ys[i] = coordinates.getValue();
             }
-//            else if (!bs[i1] && bs[i2]) {
-//                Pair<Integer, Integer> intersectPoints = p.getCoordinatesOfEdgeIntersectingScreen(s.getPoint(i1), s.getPoint(i2));
-//                xs[i1] = intersectPoints.getKey();
-//                ys[i1] = intersectPoints.getValue();
-//                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
-//            }
+            else {
+                xs[i] = flipComputerCoordinateX(coordinates.getKey());
+                ys[i] = flipComputerCoordinateY(coordinates.getValue());
+            }
         }
 
-//        imgGraphics.fillPolygon(xs, ys, numPoints);
+        if (existsVisiblePoint)
+            imgGraphics.fillPolygon(xs, ys, numPoints);
 
     }
 
@@ -169,6 +158,14 @@ public class Game extends JFrame implements ActionListener {
 
     public static int toComputerCoordinateSystemY(double Y) {
         return HEIGHT / 2 - (int) round(Y);
+    }
+
+    public static int flipComputerCoordinateX(int X) {
+        return WIDTH - X;
+    }
+
+    public static int flipComputerCoordinateY(int Y) {
+        return -Y;
     }
 
 }

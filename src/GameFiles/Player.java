@@ -42,11 +42,11 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     // + for up, - for down
     private int scrollCount = 0;
-    private double scrollSensitivity = 2;
+    private double scrollSensitivity = 5;
 
 
-    private final double WALK_SPEED = 10;
-    private final double CROUCH_SPEED = 1;
+    private final double WALK_SPEED = 5;
+    private final double CROUCH_SPEED = 2;
 
     private boolean isCrouching = false;
 
@@ -184,20 +184,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         Pair<Integer, Integer> coordinatesOnScreen = getCoordinatesOfPointInPlaneOnScreen(Pt);
 
         return new Pair<>(!pointIsBehindPlayer, coordinatesOnScreen);
-    }
-
-
-    //traces the edge p1 p2 to the view plane
-    public Pair<Integer, Integer> getCoordinatesOfEdgeIntersectingScreen(GameVector A, GameVector B) {
-        GameVector v = view;
-
-        GameVector AtoB = B.minus(A);
-
-        double t = (v.dot(v) - A.dot(v)) / AtoB.dot(v);
-
-        GameVector Pt = A.plus(AtoB.times(t));
-
-        return getCoordinatesOfPointInPlaneOnScreen(Pt);
     }
 
     public GameVector getTotalVelocity() {
