@@ -46,7 +46,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
 
     private final double WALK_SPEED = 15;
-    private final double CROUCH_SPEED = 3;
+    private final double CROUCH_SPEED = 5;
 
     private boolean isCrouching = false;
 
@@ -259,7 +259,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     }
 
-    double dX, dY, prevX, prevY;
+   private double dX, dY, prevX, prevY;
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -269,10 +269,9 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        int xmid = Game.WIDTH / 2;
-        int ymid = Game.HEIGHT / 2;
-
-        robot.mouseMove(xmid, ymid);
+//        int xmid = Game.WIDTH / 2;
+//        int ymid = Game.HEIGHT / 2;
+//        robot.mouseMove(xmid, ymid);
     }
 
     @Override
