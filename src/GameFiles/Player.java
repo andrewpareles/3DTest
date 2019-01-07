@@ -45,8 +45,8 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private double scrollSensitivity = 5;
 
 
-    private final double WALK_SPEED = 5;
-    private final double CROUCH_SPEED = 2;
+    private final double WALK_SPEED = 15;
+    private final double CROUCH_SPEED = 3;
 
     private boolean isCrouching = false;
 

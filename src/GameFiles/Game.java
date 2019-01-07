@@ -1,7 +1,7 @@
 package GameFiles;
 
 import GameObjects.CubeSquares;
-import GameObjects.CubeTriangles;
+import GameObjects.CubeSquares;
 import GameObjects.TriangularPyramid;
 import javafx.util.Pair;
 
@@ -24,21 +24,22 @@ public class Game extends JFrame implements ActionListener {
     private Player p = new Player();
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-//            new CubeSquares(5, 0, 0, 0)
-//            new CubeTriangles(5, 0, 0, 0)
-            new TriangularPyramid(new Color(0, 0, 0), 1)
-//            new CubeSquares(1, 6, 6, 6)
-//            new CubeTriangles(1, 6, 6, 6)
-//new GameObject(
-//        GameSurface.createSurface(new Color(0,0,0),GameVector.ZERO, new GameVector(1,1,1),GameVector.Z, 25 )
-//    )
-//            new CubeTriangles(1, 6, 6, -6),
-//            new CubeTriangles(1, 6, -6, 6),
-//            new CubeTriangles(1, 6, -6, -6),
-//            new CubeTriangles(1, -6, 6, 6),
-//            new CubeTriangles(1, -6, 6, -6),
-//            new CubeTriangles(1, -6, -6, 6),
-//            new CubeTriangles(1, -6, -6, -6)
+            new CubeSquares(5, 0, 0, 0),
+            new CubeSquares(5, 0, 0, 0),
+            new TriangularPyramid(20, 20, 20, 2),
+            new CubeSquares(1, 6, 6, 6),
+            new CubeSquares(1, 6, 6, 6),
+            new GameObject(
+                    GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6),  new GameVector(10, 36, 7), 25)
+
+            ),
+            new CubeSquares(1, 6, 6, -6),
+            new CubeSquares(1, 6, -6, 6),
+            new CubeSquares(1, 6, -6, -6),
+            new CubeSquares(1, -6, 6, 6),
+            new CubeSquares(1, -6, 6, -6),
+            new CubeSquares(1, -6, -6, 6),
+            new CubeSquares(1, -6, -6, -6)
     ));
 
 
@@ -56,6 +57,9 @@ public class Game extends JFrame implements ActionListener {
         Timer timer = new Timer((int) (1000 / fps), this);
         timer.start();
 
+
+        p.moveInDirection(new GameVector(-20, 5, 0));
+
     }
 
     public static void main(String[] args) {
@@ -64,7 +68,6 @@ public class Game extends JFrame implements ActionListener {
 
 
     public void actionPerformed(ActionEvent e) {
-
         p.move(fps);
 
         //NOTE: speed/fps = distance per frame
@@ -86,7 +89,6 @@ public class Game extends JFrame implements ActionListener {
     private void drawObjects() {
 
         Image img = createImage(WIDTH, HEIGHT);
-//TODO which object gets drawn 1st, maybe create chunks or take all surfaces from all objects
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -142,8 +144,7 @@ public class Game extends JFrame implements ActionListener {
                 existsVisiblePoint = true;
                 xs[i] = coordinates.getKey();
                 ys[i] = coordinates.getValue();
-            }
-            else {
+            } else {
                 xs[i] = flipComputerCoordinateX(coordinates.getKey());
                 ys[i] = flipComputerCoordinateY(coordinates.getValue());
             }
