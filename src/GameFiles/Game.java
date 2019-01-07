@@ -2,6 +2,7 @@ package GameFiles;
 
 import GameObjects.CubeSquares;
 import GameObjects.CubeTriangles;
+import GameObjects.TriangularPyramid;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -23,7 +24,9 @@ public class Game extends JFrame implements ActionListener {
     private Player p = new Player();
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
-            new CubeSquares(5, 0, 0, 0)
+//            new CubeSquares(5, 0, 0, 0)
+//            new CubeTriangles(5, 0, 0, 0)
+            new TriangularPyramid(new Color(0, 0, 0), 1)
 //            new CubeSquares(1, 6, 6, 6)
 //            new CubeTriangles(1, 6, 6, 6)
 //new GameObject(
