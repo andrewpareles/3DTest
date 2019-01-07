@@ -24,8 +24,8 @@ public class Game extends JFrame implements ActionListener {
 
     private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
 //            new CubeSquares(5, 0, 0, 0)
-            new CubeSquares(1, 6, 6, 6),
-            new CubeTriangles(1, 6, 6, 6)
+            new CubeSquares(1, 6, 6, 6)
+//            new CubeTriangles(1, 6, 6, 6)
 //new GameObject(
 //        GameSurface.createSurface(new Color(0,0,0),GameVector.ZERO, new GameVector(1,1,1),GameVector.Z, 25 )
 //    )
@@ -64,10 +64,6 @@ public class Game extends JFrame implements ActionListener {
 
         p.move(fps);
 
-
-        //            g.clearRect(0, 0, WIDTH, HEIGHT);
-//            frame.repaint();
-
         //NOTE: speed/fps = distance per frame
         //NOTE: percent/fps = percent per frame
 
@@ -87,7 +83,7 @@ public class Game extends JFrame implements ActionListener {
     private void drawObjects() {
 
         Image img = createImage(WIDTH, HEIGHT);
-
+//TODO which object gets drawn 1st, maybe create chunks or take all surfaces from all objects
         objects.sort((o1, o2) -> {
             double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
                     o2.getCenterOfObject().distanceTo(p.getPosition());
@@ -110,6 +106,7 @@ public class Game extends JFrame implements ActionListener {
 
     private void drawObject(GameObject o, Image img) {
         ArrayList<GameSurface> surfaces = o.getSurfaces();
+        //closest surface comes 1st
         surfaces.sort((o1, o2) -> {
             double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
                     o2.getCenterOfSurface().distanceTo(p.getPosition());
@@ -122,26 +119,47 @@ public class Game extends JFrame implements ActionListener {
 
 
     private void drawSurface(GameSurface s, Image img) {
+        Graphics imgGraphics = img.getGraphics();
+        imgGraphics.setColor(s.getColor());
+
         int numPoints = s.getNumPoints();
 
         int[] xs = new int[numPoints];
         int[] ys = new int[numPoints];
         boolean[] bs = new boolean[numPoints];
-        boolean existsPointInFront = false;
+
         for (int i = 0; i < numPoints; i++) {
             Pair<Boolean, Pair<Integer, Integer>> result = p.getCoordinatesOfPointOnScreen(s.getPoint(i));
-            existsPointInFront = !result.getKey() || existsPointInFront;
             Pair<Integer, Integer> coordinates = result.getValue();
-//TODO
+
+            bs[i] = result.getKey();
             xs[i] = coordinates.getKey();
             ys[i] = coordinates.getValue();
         }
 
-        if (existsPointInFront) {
-            Graphics imgGraphics = img.getGraphics();
-            imgGraphics.setColor(s.getColor());
-            imgGraphics.fillPolygon(xs, ys, numPoints);
+        for (int i = 0; i < bs.length; i++) {
+            int i1 = i == bs.length - 1 ? 0 : i;
+            int i2 = i == bs.length - 1 ? bs.length - 1 : i + 1;
+
+            if (bs[i1] && bs[i2]) {
+                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
+            } else if (bs[i1] && !bs[i2]) {
+                Pair<Integer, Integer> intersectPoints = p.getCoordinatesOfEdgeIntersectingScreen(s.getPoint(i1), s.getPoint(i2));
+                xs[i2] = intersectPoints.getKey();
+                ys[i2] = intersectPoints.getValue();
+                imgGraphics.drawOval(xs[i2], ys[i2], 500, 500);
+                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
+            }
+//            else if (!bs[i1] && bs[i2]) {
+//                Pair<Integer, Integer> intersectPoints = p.getCoordinatesOfEdgeIntersectingScreen(s.getPoint(i1), s.getPoint(i2));
+//                xs[i1] = intersectPoints.getKey();
+//                ys[i1] = intersectPoints.getValue();
+//                imgGraphics.drawLine(xs[i1], ys[i1], xs[i2], ys[i2]);
+//            }
         }
+
+//        imgGraphics.fillPolygon(xs, ys, numPoints);
+
     }
 
 

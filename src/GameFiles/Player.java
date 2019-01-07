@@ -61,14 +61,15 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         updateView();
     }
 
-    public int getCrosshairLength(){
-        return  crosshairLength;
+    public int getCrosshairLength() {
+        return crosshairLength;
     }
 
-    public int getCrosshairWidth(){
+    public int getCrosshairWidth() {
         return crosshairWidth;
     }
-    public Color getCrosshairColor(){
+
+    public Color getCrosshairColor() {
         return crosshairColor;
     }
 
@@ -122,18 +123,14 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         return position;
     }
 
-    public Pair<Boolean, Pair<Integer, Integer>> getCoordinatesOfPointOnScreen(GameVector P1) {
+    public GameVector getView() {
+        return view;
+    }
 
+    //Pt is the coordinates of the vector (yes, starting from the origin)
+    public Pair<Integer, Integer> getCoordinatesOfPointInPlaneOnScreen(GameVector Pt) {
         GameVector v = view;
         GameVector P = position;
-        GameVector PtoP1 = P1.minus(P);
-
-        double t = v.dot(v) / v.dot(PtoP1);
-        //if behind or in you
-        boolean pointIsBehindPlayer = t <= 0;
-
-        //point on plane:
-        GameVector Pt = P.plus(PtoP1.times(t));
 
         // Now determine how to draw Pt on the screen
         // orthogonal vectors, H is horizontal ("x-axis"), V is vertical ("y-axis")
@@ -166,8 +163,41 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
         int X = Game.toComputerCoordinateSystemX(x);
         int Y = Game.toComputerCoordinateSystemY(y);
+        return new Pair<>(X, Y);
+    }
 
-        return new Pair<>(pointIsBehindPlayer, new Pair<>(X, Y));
+
+    //returns true if in front of player, false otherwise, and then coords.
+    public Pair<Boolean, Pair<Integer, Integer>> getCoordinatesOfPointOnScreen(GameVector P1) {
+        GameVector v = view;
+        GameVector P = position;
+        GameVector PtoP1 = P1.minus(P);
+
+        double t = v.dot(v) / v.dot(PtoP1);
+
+        //if behind or in you
+        boolean pointIsBehindPlayer = t <= 0;
+
+        //point on plane:
+        GameVector Pt = P.plus(PtoP1.times(t));
+
+        Pair<Integer, Integer> coordinatesOnScreen = getCoordinatesOfPointInPlaneOnScreen(Pt);
+
+        return new Pair<>(!pointIsBehindPlayer, coordinatesOnScreen);
+    }
+
+
+    //traces the edge p1 p2 to the view plane
+    public Pair<Integer, Integer> getCoordinatesOfEdgeIntersectingScreen(GameVector A, GameVector B) {
+        GameVector v = view;
+
+        GameVector AtoB = B.minus(A);
+
+        double t = (v.dot(v) - A.dot(v)) / AtoB.dot(v);
+
+        GameVector Pt = A.plus(AtoB.times(t));
+
+        return getCoordinatesOfPointInPlaneOnScreen(Pt);
     }
 
     public GameVector getTotalVelocity() {

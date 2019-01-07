@@ -87,7 +87,7 @@ public class GameVector {
                 .plus(focus);
     }
 
-    // Project t onto v, return (t . v / v . v) v
+    // Project t onto v, return (t . v ) v
     // Requires v.length() == 1
     public GameVector projectOnUnit(GameVector v) {
         return v.times(this.dot(v));
@@ -119,6 +119,10 @@ public class GameVector {
         return b.plus(what.times(cos(theta)))
                 .plus(vhat.times(sin(theta)));
 
+    }
+
+    public String toString() {
+        return "x:\t" + x + "\ny:\t" + y + "\nz:\t" + z + "\n";
     }
 
     public boolean equals(Object o) {

@@ -52,13 +52,19 @@ public class GameSurface {
         return surfaceBounds.get(n);
     }
 
-    // Either 3 or 4
     public int getNumPoints() {
         return surfaceBounds.size();
     }
 
+    //I THINK this will always lie in the plane of the surface
     public GameVector getCenterOfSurface() {
         return Helpers.AverageVector.getAverageSurfaceVector(this.surfaceBounds);
+    }
+
+    public GameVector getNormalVector() {
+        GameVector center = getCenterOfSurface();
+        return surfaceBounds.get(0).minus(center)
+                .cross(surfaceBounds.get(1).minus(center)).normalize();
     }
 
     public void shiftBy(GameVector shiftAmount) {
