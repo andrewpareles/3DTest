@@ -1,7 +1,6 @@
 package GameFiles;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -31,7 +30,7 @@ public class GameSurface {
         GameVector[] points = new GameVector[numSides];
 
         points[0] = r;
-        for (int i = 1; i < numSides; i++) points[i] = points[i - 1].rotateBy(GameVector.ZERO, normal, changeAngle);
+        for (int i = 1; i < numSides; i++) points[i] = points[i - 1].rotatedBy(GameVector.ZERO, normal, changeAngle);
 
         GameSurface s = new GameSurface(color, points);
         s.shiftBy(center);
@@ -64,22 +63,22 @@ public class GameSurface {
     public GameVector getNormalVector() {
         GameVector center = getCenterOfSurface();
         return surfaceBounds.get(0).minus(center)
-                .cross(surfaceBounds.get(1).minus(center)).normalize();
+                .cross(surfaceBounds.get(1).minus(center)).normal();
     }
 
     public void shiftBy(GameVector shiftAmount) {
         for (int i = 0; i < surfaceBounds.size(); i++)
-            surfaceBounds.set(i, surfaceBounds.get(i).plus(shiftAmount));
+            surfaceBounds.get(i).shiftBy(shiftAmount);
     }
 
     public void rotateBy(GameVector focus, GameVector axis, double theta) {
         for (int i = 0; i < surfaceBounds.size(); i++)
-            surfaceBounds.set(i, surfaceBounds.get(i).rotateBy(focus, axis, theta));
+            surfaceBounds.get(i).rotateBy(focus, axis, theta);
     }
 
     public void scaleBy(GameVector focus, double percentChange) {
         for (int i = 0; i < surfaceBounds.size(); i++)
-            surfaceBounds.set(i, surfaceBounds.get(i).scaleBy(focus, percentChange));
+            surfaceBounds.get(i).scaleBy(focus, percentChange);
     }
 
 

@@ -27,6 +27,8 @@ public class TriangularPyramid extends GameObject {
                 )
 
         );
+
+        //TODO why does this change player velocity to 280 ????
         this.shiftBy(new GameVector(x, y, z));
     }
 

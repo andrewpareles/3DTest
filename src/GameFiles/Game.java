@@ -31,7 +31,6 @@ public class Game extends JFrame implements ActionListener {
             new CubeSquares(1, 6, 6, 6),
             new GameObject(
                     GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6),  new GameVector(10, 36, 7), 25)
-
             ),
             new CubeSquares(1, 6, 6, -6),
             new CubeSquares(1, 6, -6, 6),
@@ -66,19 +65,23 @@ public class Game extends JFrame implements ActionListener {
         new Game();
     }
 
-
     public void actionPerformed(ActionEvent e) {
+        System.out.println(p.getTotalVelocity());
         p.move(fps);
 
         //NOTE: speed/fps = distance per frame
         //NOTE: percent/fps = percent per frame
-
-//            objects.get(8).shiftBy(objects.get(8).getCenterOfObject().minus(p.getPosition()).normalize().times(1 / objects.get(8).getCenterOfObject().length()));
-//            objects.get(0).rotateBy(new GameFiles.GameVector(0, 0, 0), new GameFiles.GameVector(0, 2, 0), .005);
+//GameVector amt = objects.get(12).getCenterOfObject().minus(p.getPosition()).normal().times(1 / objects.get(12).getCenterOfObject().length());
+//            objects.get(12).shiftBy(amt);
+        // TODO WHY DOES ROTATING MOVE THINGS TO THE ORIGIN
+//        GameVector amt2 = objects.get(0).getCenterOfObject();
+//        System.out.println(amt2);
+//        objects.get(0).rotateBy(amt2, new GameFiles.GameVector(0, 1, 0), .005);
 //            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
 
 //        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
         repaint();
+
     }
 
     @Override
@@ -148,6 +151,7 @@ public class Game extends JFrame implements ActionListener {
                 xs[i] = flipComputerCoordinateX(coordinates.getKey());
                 ys[i] = flipComputerCoordinateY(coordinates.getValue());
             }
+
         }
 
         if (existsVisiblePoint)

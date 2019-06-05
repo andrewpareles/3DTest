@@ -20,6 +20,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private final double VIEW_HEIGHT = 2 * d * tan(viewAngleHeight);
 
     private final double thetaDefault = 0;
+    // theta is in (0, 2pi)
     private double theta = thetaDefault;
 
     private final double phiDefault = 0;
@@ -83,6 +84,14 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     private void updateView() {
+        // theta is in [0, 2pi)
+        while (theta >= 2 * Math.PI) theta -= 2 * Math.PI;
+        while (theta < 0) theta += 2 * Math.PI;
+
+        while (phi > Math.PI / 2) phi -= Math.PI;
+        while (phi < -Math.PI / 2) phi += Math.PI;
+
+
         view = new GameVector(f * cos(theta), f * sin(theta), d * sin(phi));
     }
 
@@ -94,7 +103,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     public void setView(GameVector view) {
-        GameVector normal = view.normalize();
+        GameVector normal = view.normal();
         double asin = asin(normal.y() / f);
         double acos = acos(normal.x() / f);
 
@@ -134,8 +143,8 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
         // Now determine how to draw Pt on the screen
         // orthogonal vectors, H is horizontal ("x-axis"), V is vertical ("y-axis")
-        GameVector H = new GameVector(-v.y(), v.x(), 0).negate().normalize();
-        GameVector V = H.cross(v).normalize();
+        GameVector H = new GameVector(-v.y(), v.x(), 0).negative().normal();
+        GameVector V = H.cross(v).normal();
 
         // point that V and H are based on, "center" of screen
         GameVector vPlusP = v.plus(P);
@@ -187,15 +196,24 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     public GameVector getTotalVelocity() {
-        GameVector w = new GameVector(view.x(), view.y(), 0).normalize();
-        GameVector a = w.rotateBy(GameVector.ZERO, new GameVector(0, 0, 1), Math.PI / 2);
-        GameVector s = w.negate();
-        GameVector d = a.negate();
+        GameVector w = (new GameVector(view.x(), view.y(), 0)).normal();
+        System.out.println("w1:" + w);
+
+        GameVector a = w.rotatedBy(GameVector.ZERO, new GameVector(0, 0, 1), Math.PI / 2);
+        GameVector s = w.negative();
+        GameVector d = a.negative();
         GameVector q = GameVector.Z;
-        GameVector e = q.negate();
+        GameVector e = q.negative();
         GameVector v = view;
+        System.out.println("w2:" + w);
 
         double speed = isCrouching ? CROUCH_SPEED : WALK_SPEED;
+        System.out.println("speed" + speed);
+
+        System.out.println("w*speed" + w.times(speed));
+        System.out.println("zero" + GameVector.ZERO);
+
+
         w = W ? w.times(speed) : GameVector.ZERO;
         a = A ? a.times(speed) : GameVector.ZERO;
         s = S ? s.times(speed) : GameVector.ZERO;
@@ -203,6 +221,18 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         q = Q ? q.times(speed) : GameVector.ZERO;
         e = E ? e.times(speed) : GameVector.ZERO;
         v = v.times(scrollCount * speed * scrollSensitivity);
+        System.out.println("w3:" + w);
+
+
+        System.out.println("vel:" + velocity.length());
+        System.out.println("w:" + w.length());
+        System.out.println("a:" + a.length());
+        System.out.println("s:" + s.length());
+        System.out.println("d:" + d.length());
+        System.out.println("q:" + q.length());
+        System.out.println("e:" + e.length());
+        System.out.println("v:" + v.length());
+
         return velocity.plus(w).plus(a).plus(s).plus(d).plus(q).plus(e).plus(v);
     }
 
@@ -259,12 +289,12 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     }
 
-   private double dX, dY, prevX, prevY;
+    private double dX, dY, prevX, prevY;
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = e.getX();
-        prevY = e.getY();
+        prevX = e.getXOnScreen();
+        prevY = e.getYOnScreen();
     }
 
     @Override
@@ -273,20 +303,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 //        int ymid = Game.HEIGHT / 2;
 //        robot.mouseMove(xmid, ymid);
     }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        dX = x - prevX;
-        dY = y - prevY;
-        prevX = x;
-        prevY = y;
-        changeThetaBy(-dX * xSens / Game.WIDTH);
-        //this is width on purpose v
-        changePhiBy(-dY * ySens / Game.WIDTH);
-    }
-
 
     private Robot initializeRobot() {
         Robot r = null;
@@ -297,19 +313,42 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         }
         return r;
     }
-
     private Robot robot = initializeRobot();
+    private int xmid = Game.WIDTH / 2;
+    private int ymid = Game.HEIGHT / 2;
+
+    private void updateMouse(MouseEvent e, boolean moveTDragF) {
+        int x = e.getX();
+        int y = e.getY();
+        if (moveTDragF) {
+            dX = x - xmid;
+            dY = y - ymid;
+            robot.mouseMove(xmid, ymid);
+        } else {
+            dX = x - prevX;
+            dY = y - prevY;
+            prevX = x;
+            prevY = y;
+        }
+        double dTheta = -dX * xSens / Game.WIDTH;
+        double dPhi = -dY * ySens / Game.WIDTH; //this is width on purpose
+
+        changeThetaBy(dTheta);
+        changePhiBy(dPhi);
+
+        // teleport rotation condition
+//        if (dTheta > 0 && 0 < theta + dTheta && theta + dTheta < Math.PI / 2) changeThetaBy(Math.PI / 2);
+//        if (dTheta < 0 && 0 < theta + dTheta && theta + dTheta < Math.PI / 2) changeThetaBy(-Math.PI / 2);
+
+    }
+    @Override
+    public void mouseDragged(MouseEvent e) {
+//        updateMouse(e, false);
+    }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-//        int xmid = Game.WIDTH / 2;
-//        int ymid = Game.HEIGHT / 2;
-//        int dX = e.getXOnScreen() - xmid;
-//        int dY = e.getYOnScreen() - ymid;
-//
-//        changeThetaBy(-dX * xSens / 1000);
-//        changePhiBy(-dY * ySens / 1000);
-
+        updateMouse(e, true);
     }
 
     @Override
