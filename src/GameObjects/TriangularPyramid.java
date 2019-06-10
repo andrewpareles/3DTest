@@ -17,18 +17,17 @@ public class TriangularPyramid extends GameObject {
                 ),
                 GameSurface.createSurface(new Color(120, 32, 6),
                         new GameVector(2 * s, 1.5 * s, 1.5 * s),
-                        GameVector.ZERO,
+                        GameVector.ZERO(),
                         new GameVector(2 * s, 3 * s, 0)
                 ),
                 GameSurface.createSurface(new Color(0, 255, 36),
                         new GameVector(2 * s, 1.5 * s, 1.5 * s),
                         new GameVector(4 * s, 0, 0),
-                        GameVector.ZERO
+                        GameVector.ZERO()
                 )
 
         );
 
-        //TODO why does this change player velocity to 280 ????
         this.shiftBy(new GameVector(x, y, z));
     }
 

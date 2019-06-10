@@ -14,26 +14,26 @@ public class CubeSquares extends GameObject {
         super(
                 GameSurface.createSurface(new Color(120, 32, 6),
                         new GameVector(x, y, z),
-                        GameVector.X,
+                        GameVector.X(),
                         new GameVector(x + s, y + s, z + s),
                         4
                 ),
                 GameSurface.createSurface(new Color(120, 32, 6),
                         new GameVector(x, y, z),
-                        GameVector.X,
+                        GameVector.X(),
                         new GameVector(x - s, y + s, z + s),
                         4
                 ),
 //floor, zs position
                 GameSurface.createSurface(new Color(0, 17, 255),
                         new GameVector(x, y, z),
-                        GameVector.Z,
+                        GameVector.Z(),
                         new GameVector(x + s, y + s, z + s),
                         4)
                 ,
                 GameSurface.createSurface(new Color(0, 17, 255),
                         new GameVector(x, y, z),
-                        GameVector.Z,
+                        GameVector.Z(),
                         new GameVector(x + s, y + s, z - s),
                         4
                 ),
@@ -41,13 +41,13 @@ public class CubeSquares extends GameObject {
 //wall, ys position
                 GameSurface.createSurface(new Color(21, 255, 0),
                         new GameVector(x, y, z),
-                        GameVector.Y,
+                        GameVector.Y(),
                         new GameVector(x + s, y + s, z + s),
                         4
                 ),
                 GameSurface.createSurface(new Color(21, 255, 0),
                         new GameVector(x, y, z),
-                        GameVector.Y,
+                        GameVector.Y(),
                         new GameVector(x + s, y - s, z + s),
                         4
                 )

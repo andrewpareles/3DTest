@@ -66,7 +66,6 @@ public class Game extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        System.out.println(p.getTotalVelocity());
         p.move(fps);
 
         //NOTE: speed/fps = distance per frame
@@ -74,10 +73,10 @@ public class Game extends JFrame implements ActionListener {
 //GameVector amt = objects.get(12).getCenterOfObject().minus(p.getPosition()).normal().times(1 / objects.get(12).getCenterOfObject().length());
 //            objects.get(12).shiftBy(amt);
         // TODO WHY DOES ROTATING MOVE THINGS TO THE ORIGIN
-//        GameVector amt2 = objects.get(0).getCenterOfObject();
-//        System.out.println(amt2);
-//        objects.get(0).rotateBy(amt2, new GameFiles.GameVector(0, 1, 0), .005);
-//            objects.get(0).scaleBy(GameFiles.GameVector.ZERO, (10 / 100d) * (1 / fps));
+        GameVector amt2 = objects.get(0).getCenterOfObject();
+        System.out.println(amt2);
+        objects.get(0).rotateBy(amt2, new GameFiles.GameVector(0, 1, 0), .005);
+            objects.get(0).scaleBy(GameFiles.GameVector.ZERO(), (10 / 100d) * (1 / fps));
 
 //        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
         repaint();

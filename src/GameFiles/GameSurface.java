@@ -30,7 +30,7 @@ public class GameSurface {
         GameVector[] points = new GameVector[numSides];
 
         points[0] = r;
-        for (int i = 1; i < numSides; i++) points[i] = points[i - 1].rotatedBy(GameVector.ZERO, normal, changeAngle);
+        for (int i = 1; i < numSides; i++) points[i] = points[i - 1].rotatedBy(GameVector.ZERO(), normal, changeAngle);
 
         GameSurface s = new GameSurface(color, points);
         s.shiftBy(center);

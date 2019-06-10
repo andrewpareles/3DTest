@@ -27,13 +27,13 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     // phi is from -pi/2 to pi/2
     private double phi = phiDefault;
 
-    private final GameVector positionDefault = GameVector.ZERO;
+    private final GameVector positionDefault = GameVector.ZERO();
     private GameVector position = positionDefault;
 
     //view is always normal
     private GameVector view;
     // velocity DOES NOT incorporate walking speed
-    private GameVector velocity = GameVector.ZERO;
+    private GameVector velocity = GameVector.ZERO();
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
 
@@ -197,41 +197,23 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     public GameVector getTotalVelocity() {
         GameVector w = (new GameVector(view.x(), view.y(), 0)).normal();
-        System.out.println("w1:" + w);
 
-        GameVector a = w.rotatedBy(GameVector.ZERO, new GameVector(0, 0, 1), Math.PI / 2);
+        GameVector a = w.rotatedBy(GameVector.ZERO(), new GameVector(0, 0, 1), Math.PI / 2);
         GameVector s = w.negative();
         GameVector d = a.negative();
-        GameVector q = GameVector.Z;
+        GameVector q = GameVector.Z();
         GameVector e = q.negative();
         GameVector v = view;
-        System.out.println("w2:" + w);
 
         double speed = isCrouching ? CROUCH_SPEED : WALK_SPEED;
-        System.out.println("speed" + speed);
 
-        System.out.println("w*speed" + w.times(speed));
-        System.out.println("zero" + GameVector.ZERO);
-
-
-        w = W ? w.times(speed) : GameVector.ZERO;
-        a = A ? a.times(speed) : GameVector.ZERO;
-        s = S ? s.times(speed) : GameVector.ZERO;
-        d = D ? d.times(speed) : GameVector.ZERO;
-        q = Q ? q.times(speed) : GameVector.ZERO;
-        e = E ? e.times(speed) : GameVector.ZERO;
+        w = W ? w.times(speed) : GameVector.ZERO();
+        a = A ? a.times(speed) : GameVector.ZERO();
+        s = S ? s.times(speed) : GameVector.ZERO();
+        d = D ? d.times(speed) : GameVector.ZERO();
+        q = Q ? q.times(speed) : GameVector.ZERO();
+        e = E ? e.times(speed) : GameVector.ZERO();
         v = v.times(scrollCount * speed * scrollSensitivity);
-        System.out.println("w3:" + w);
-
-
-        System.out.println("vel:" + velocity.length());
-        System.out.println("w:" + w.length());
-        System.out.println("a:" + a.length());
-        System.out.println("s:" + s.length());
-        System.out.println("d:" + d.length());
-        System.out.println("q:" + q.length());
-        System.out.println("e:" + e.length());
-        System.out.println("v:" + v.length());
 
         return velocity.plus(w).plus(a).plus(s).plus(d).plus(q).plus(e).plus(v);
     }

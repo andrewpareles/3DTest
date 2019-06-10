@@ -5,10 +5,10 @@ import static java.lang.Math.*;
 public class GameVector {
     private double x, y, z;
 
-    public static final GameVector ZERO = new GameVector(0, 0, 0);
-    public static final GameVector X = new GameVector(1, 0, 0);
-    public static final GameVector Y = new GameVector(0, 1, 0);
-    public static final GameVector Z = new GameVector(0, 0, 1);
+    public static GameVector ZERO() { return new GameVector(0, 0, 0); }
+    public static GameVector X() { return new GameVector(1, 0, 0); }
+    public static GameVector Y() { return new GameVector(0, 1, 0); }
+    public static GameVector Z() { return new GameVector(0, 0, 1); }
 
 
     public GameVector(double x, double y, double z) {
