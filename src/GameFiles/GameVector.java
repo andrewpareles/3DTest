@@ -10,6 +10,8 @@ public class GameVector {
     public static GameVector Y() { return new GameVector(0, 1, 0); }
     public static GameVector Z() { return new GameVector(0, 0, 1); }
 
+    public static GameVector INF() { return new GameVector(Double.NaN, Double.NaN, Double.NaN); }
+
 
     public GameVector(double x, double y, double z) {
         this.x = x;
@@ -36,25 +38,26 @@ public class GameVector {
         );
     }
 
-    public final GameVector times(double t) {
-        return new GameVector(t * x, t * y, t * z);
+    public boolean isFinite(){
+        return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z);
     }
 
+    public final GameVector times(double t) {
+        GameVector v = new GameVector(t * x, t * y, t * z);
+        return v;
+    }
 
     public final GameVector plus(GameVector v) {
-        return new GameVector(
+        GameVector v2 = new GameVector(
                 x + v.x,
                 y + v.y,
                 z + v.z
         );
+        return v2;
     }
 
     public final GameVector minus(GameVector v) {
-        return new GameVector(
-                x - v.x,
-                y - v.y,
-                z - v.z
-        );
+        return plus(v.negative());
     }
 
     public double length() {
