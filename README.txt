@@ -6,6 +6,7 @@ To execute, run the executable file located at ./out/artifacts/3DTest_jar/3DTest
 
 Controls:
 - WASD to move
+- QE to move up or down
 - move mouse to move the camera
 - scroll in/out to move directly towards/away from
 - Esc for options/pause
