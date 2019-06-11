@@ -70,14 +70,14 @@ public class Game extends JFrame implements ActionListener {
         //NOTE: speed/fps = distance per frame
         //NOTE: percent/fps = percent per frame
 
-        GameVector ctrOfLast = objects.getLast().getCenterOfObject();
+        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
 
 //        GameVector amt = dist.minus(p.getPosition()).times(1 / dist.lengthSquared());
 //        if (amt.isFinite()) objects.getLast().shiftBy(amt);
 
         // TODO WHY DOES ROTATING MOVE THINGS TO THE ORIGIN
 
-        objects.getLast().rotateBy(ctrOfLast, new GameFiles.GameVector(0, 1, 0), .01);
+        objects.getLast().rotateBy(ctrOfClosest, new GameFiles.GameVector(0, 1, 0), .01);
 
 //        objects.getLast().scaleBy(objects.getLast().getCenterOfObject(), (10 / 100d) * (1 / fps));
 
