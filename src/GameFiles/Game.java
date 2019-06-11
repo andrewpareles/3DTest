@@ -82,12 +82,16 @@ public class Game extends JFrame implements ActionListener {
         if (amt.isFinite()) objects.getLast().shiftBy(amt);
     }
 
+    //todo make these checkboxes in an escape button press
+    boolean ROT = true, SCALE = true, REPEL = true, ESC = false;
     public void actionPerformed(ActionEvent e) {
+        if (ESC) return;
+
         p.move(fps);
 
-        rotateClosestObject(p.getView(), 1);
-        growClosestObject(5);
-        repelClosestObject(.3, 2);
+        if (ROT) rotateClosestObject(p.getView(), .8);
+        if (SCALE) growClosestObject(5);
+        if (REPEL) repelClosestObject(.3, 2);
 
         repaint();
     }
