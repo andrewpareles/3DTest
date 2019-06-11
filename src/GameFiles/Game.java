@@ -85,7 +85,7 @@ public class Game extends JFrame implements ActionListener {
 
     //todo make these checkboxes in an escape button press
     //todo organize items by name, hashmap
-    //todo intersection math: 1) camera 2) two different objects
+    //todo intersection math: 1) camera-object 2) two different objects
     //todo add a move() function for each object to do on its own
     boolean ROT = true, SCALE = true, REPEL = false, ESC = false;
     public void actionPerformed(ActionEvent e) {
