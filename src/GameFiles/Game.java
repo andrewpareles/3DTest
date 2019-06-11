@@ -77,8 +77,8 @@ public class Game extends JFrame implements ActionListener {
 
     // repels proportionally to scaleConst * (1 / distance^inversePow)
     private void repelClosestObject(double scaleConst, double inversePow) {
-        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
-        GameVector amt = ctrOfClosest.minus(p.getPosition()).times(scaleConst / Math.pow(ctrOfClosest.lengthSquared(), inversePow / 2));
+        GameVector distToClosest = objects.getLast().getCenterOfObject().minus(p.getPosition());
+        GameVector amt = distToClosest.times(scaleConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
         if (amt.isFinite()) objects.getLast().shiftBy(amt);
     }
 
@@ -86,8 +86,8 @@ public class Game extends JFrame implements ActionListener {
         p.move(fps);
 
         rotateClosestObject(p.getView(), 1);
-//        growClosestObject(10);
-//        repelClosestObject(1, 2);
+        growClosestObject(5);
+        repelClosestObject(.3, 2);
 
         repaint();
     }
