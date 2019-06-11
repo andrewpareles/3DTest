@@ -133,8 +133,10 @@ public class GameVector {
         //perpendicular component also in plane of rotation
         GameVector vhat = w.cross(a.negative()).normal().times(what.length());
 
-        return focus.plus(b.plus(what.times(cos(theta)))
-                .plus(vhat.times(sin(theta))));
+        return what.times(cos(theta))
+                .plus(vhat.times(sin(theta)))
+                .plus(focus)
+                .plus(b);
     }
 
     public void rotateBy(GameVector focus, GameVector axis, double theta) {
