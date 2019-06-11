@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static java.lang.Math.round;
 
@@ -23,7 +24,7 @@ public class Game extends JFrame implements ActionListener {
 
     private Player p = new Player();
 
-    private ArrayList<GameObject> objects = new ArrayList<>(Arrays.asList(
+    private LinkedList<GameObject> objects = new LinkedList<>(Arrays.asList(
             new CubeSquares(5, 0, 0, 0),
             new TriangularPyramid(20, 20, 20, 2),
             new CubeSquares(1, 6, 6, 6),
@@ -69,20 +70,17 @@ public class Game extends JFrame implements ActionListener {
         //NOTE: speed/fps = distance per frame
         //NOTE: percent/fps = percent per frame
 
-//        GameVector dist = objects.get(objects.size()-1).getCenterOfObject();
+        GameVector ctrOfLast = objects.getLast().getCenterOfObject();
+
 //        GameVector amt = dist.minus(p.getPosition()).times(1 / dist.lengthSquared());
-//        if (amt.isFinite()) objects.get(objects.size()-1).shiftBy(amt);
-
-
+//        if (amt.isFinite()) objects.getLast().shiftBy(amt);
 
         // TODO WHY DOES ROTATING MOVE THINGS TO THE ORIGIN
-        
-//        GameVector amt2 = objects.get(0).getCenterOfObject();
-//        System.out.println(amt2);
-//        objects.get(0).rotateBy(amt2, new GameFiles.GameVector(0, 1, 0), .005);
-//            objects.get(0).scaleBy(GameFiles.GameVector.ZERO(), (10 / 100d) * (1 / fps));
 
-//        getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
+        objects.getLast().rotateBy(ctrOfLast, new GameFiles.GameVector(0, 1, 0), .01);
+
+//        objects.getLast().scaleBy(objects.getLast().getCenterOfObject(), (10 / 100d) * (1 / fps));
+
         repaint();
 
     }

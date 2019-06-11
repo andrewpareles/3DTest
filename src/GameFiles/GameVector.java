@@ -10,9 +10,6 @@ public class GameVector {
     public static GameVector Y() { return new GameVector(0, 1, 0); }
     public static GameVector Z() { return new GameVector(0, 0, 1); }
 
-    public static GameVector INF() { return new GameVector(Double.NaN, Double.NaN, Double.NaN); }
-
-
     public GameVector(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -30,7 +27,7 @@ public class GameVector {
         return x * v.x + y * v.y + z * v.z;
     }
 
-    public final GameVector cross(GameVector v) {
+    public GameVector cross(GameVector v) {
         return new GameVector(
                 y * v.z - z * v.y,
                 z * v.x - x * v.z,
@@ -42,12 +39,17 @@ public class GameVector {
         return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z);
     }
 
-    public final GameVector times(double t) {
+
+    public boolean isParallelTo(GameVector v){
+        return this.normal().equals(v.normal()) || this.normal().equals(v.normal().negative());
+    }
+
+    public GameVector times(double t) {
         GameVector v = new GameVector(t * x, t * y, t * z);
         return v;
     }
 
-    public final GameVector plus(GameVector v) {
+    public GameVector plus(GameVector v) {
         GameVector v2 = new GameVector(
                 x + v.x,
                 y + v.y,
@@ -56,7 +58,7 @@ public class GameVector {
         return v2;
     }
 
-    public final GameVector minus(GameVector v) {
+    public GameVector minus(GameVector v) {
         return plus(v.negative());
     }
 
@@ -72,11 +74,11 @@ public class GameVector {
         return this.minus(v).length();
     }
 
-    public final GameVector normal() {
+    public GameVector normal() {
         return this.times(1 / this.length());
     }
 
-    public final GameVector negative() {
+    public GameVector negative() {
         return new GameVector(-x, -y, -z);
     }
 
@@ -92,7 +94,7 @@ public class GameVector {
         return z;
     }
 
-    public final GameVector scaledBy(GameVector focus, double percentChange) {
+    public GameVector scaledBy(GameVector focus, double percentChange) {
         return this.minus(focus).times(1 + percentChange).plus(focus);
     }
 
@@ -102,32 +104,40 @@ public class GameVector {
 
     // Project t onto v, return (t . v ) v
     // Requires v.length() == 1
-    public final GameVector projectedOnUnit(GameVector v) {
+    public GameVector projectedOnUnit(GameVector v) {
         return v.times(this.dot(v));
     }
 
     // Project t onto v, return (t . v / v . v) v
     // Requires v.length() != 0
-    public final GameVector projectedOn(GameVector v) {
+    public GameVector projectedOn(GameVector v) {
         return v.times(this.dot(v) / (v.lengthSquared()));
     }
 
     //axis is the axis vector, focus is the point about which rotation occurs
-    public final GameVector rotatedBy(GameVector focus, GameVector axis, double theta) {
+    public GameVector rotatedBy(GameVector focus, GameVector axis, double theta) {
 
         GameVector a = axis.normal();
 
-        //if point is on axis then do nothing
         GameVector w = this.minus(focus);
-        if (w.lengthSquared() == 0 ||
-                w.normal().equals(a) ||
-                w.normal().negative().equals(a))
-            return this;
+        //if point is on axis then do nothing
+//        if (w.lengthSquared() == 0 || w.isParallelTo(a))
+//            return this;
 
+        //component not being rotated, will add it back later
         GameVector b = w.projectedOnUnit(a);
 
+        //component in plane of rotation
         GameVector what = w.minus(b);
+
+        //perpendicular component also in plane of rotation
         GameVector vhat = w.cross(a.negative()).normal().times(what.length());
+
+        System.out.println(a);
+        System.out.println(w);
+        System.out.println(b);
+        System.out.println(what);
+        System.out.println(vhat);
 
         return b.plus(what.times(cos(theta)))
                 .plus(vhat.times(sin(theta)));
