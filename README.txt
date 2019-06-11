@@ -2,7 +2,7 @@
 
 All the math and code was calculated, formulated and written by me!
 
-To execute, run the executable file.
+To execute, run the executable file located at ./out/artifacts/3DTest_jar/3DTest.jar
 
 Controls:
 - WASD to move
