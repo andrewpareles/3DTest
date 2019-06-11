@@ -95,6 +95,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         view = new GameVector(f * cos(theta), f * sin(theta), d * sin(phi));
     }
 
+    // theta is in radians
     public void setView(double theta, double phi) {
         this.theta = theta;
         this.phi = phi;

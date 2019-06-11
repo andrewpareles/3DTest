@@ -56,6 +56,7 @@ public class Game extends JFrame implements ActionListener {
         timer.start();
 
         p.moveInDirection(new GameVector(-20, 5, 8));
+        p.setView(Math.toRadians(90), Math.toRadians(-60));
     }
 
     public static void main(String[] args) {
@@ -86,7 +87,7 @@ public class Game extends JFrame implements ActionListener {
     //todo organize items by name, hashmap
     //todo intersection math: 1) camera 2) two different objects
     //todo add a move() function for each object to do on its own
-    boolean ROT = true, SCALE = true, REPEL = true, ESC = false;
+    boolean ROT = true, SCALE = true, REPEL = false, ESC = false;
     public void actionPerformed(ActionEvent e) {
         if (ESC) return;
 
