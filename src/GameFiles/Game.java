@@ -55,7 +55,7 @@ public class Game extends JFrame implements ActionListener {
         Timer timer = new Timer((int) (1000d / fps), this);
         timer.start();
 
-        p.moveInDirection(new GameVector(-20, 5, 0));
+        p.moveInDirection(new GameVector(-20, 5, 8));
     }
 
     public static void main(String[] args) {
@@ -83,13 +83,16 @@ public class Game extends JFrame implements ActionListener {
     }
 
     //todo make these checkboxes in an escape button press
+    //todo organize items by name, hashmap
+    //todo intersection math: 1) camera 2) two different objects
+    //todo add a move() function for each object to do on its own
     boolean ROT = true, SCALE = true, REPEL = true, ESC = false;
     public void actionPerformed(ActionEvent e) {
         if (ESC) return;
 
         p.move(fps);
 
-        if (ROT) rotateClosestObject(p.getView(), .8);
+        if (ROT) rotateClosestObject(p.getView(), .1);
         if (SCALE) growClosestObject(5);
         if (REPEL) repelClosestObject(.3, 2);
 
