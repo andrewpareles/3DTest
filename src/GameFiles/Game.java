@@ -29,7 +29,7 @@ public class Game extends JFrame implements ActionListener {
             new TriangularPyramid(20, 20, 20, 2),
             new CubeSquares(1, 6, 6, 6),
             new GameObject(
-                    GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6),  new GameVector(10, 36, 7), 25)
+                    GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6), new GameVector(10, 36, 7), 25)
             ),
             new CubeSquares(1, 6, 6, -6),
             new CubeSquares(1, 6, -6, 6),
@@ -52,37 +52,44 @@ public class Game extends JFrame implements ActionListener {
         addMouseMotionListener(p);
         addMouseWheelListener(p);
 
-        Timer timer = new Timer((int) (1000 / fps), this);
+        Timer timer = new Timer((int) (1000d / fps), this);
         timer.start();
 
-
         p.moveInDirection(new GameVector(-20, 5, 0));
-
     }
 
     public static void main(String[] args) {
         new Game();
     }
 
+    //NOTE: speed/fps = distance per frame
+    //NOTE: percent/fps = percent per frame
+
+    private void rotateClosestObject(GameVector axis, double rotationsPerSecond) {
+        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
+        objects.getLast().rotateBy(ctrOfClosest, axis, Math.toRadians(rotationsPerSecond * 360d) / fps);
+    }
+
+    private void growClosestObject(double percent100PerSecond) {
+        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
+        objects.getLast().scaleBy(ctrOfClosest, (percent100PerSecond / 100d) / fps);
+    }
+
+    // repels proportionally to scaleConst * (1 / distance^inversePow)
+    private void repelClosestObject(double scaleConst, double inversePow) {
+        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
+        GameVector amt = ctrOfClosest.minus(p.getPosition()).times(scaleConst / Math.pow(ctrOfClosest.lengthSquared(), inversePow / 2));
+        if (amt.isFinite()) objects.getLast().shiftBy(amt);
+    }
+
     public void actionPerformed(ActionEvent e) {
         p.move(fps);
 
-        //NOTE: speed/fps = distance per frame
-        //NOTE: percent/fps = percent per frame
-
-        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
-
-//        GameVector amt = dist.minus(p.getPosition()).times(1 / dist.lengthSquared());
-//        if (amt.isFinite()) objects.getLast().shiftBy(amt);
-
-        // TODO WHY DOES ROTATING MOVE THINGS TO THE ORIGIN
-
-        objects.getLast().rotateBy(ctrOfClosest, new GameFiles.GameVector(0, 1, 0), .01);
-
-//        objects.getLast().scaleBy(objects.getLast().getCenterOfObject(), (10 / 100d) * (1 / fps));
+        rotateClosestObject(p.getView(), 1);
+//        growClosestObject(10);
+//        repelClosestObject(1, 2);
 
         repaint();
-
     }
 
     @Override

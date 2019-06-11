@@ -5,10 +5,26 @@ import static java.lang.Math.*;
 public class GameVector {
     private double x, y, z;
 
-    public static GameVector ZERO() { return new GameVector(0, 0, 0); }
-    public static GameVector X() { return new GameVector(1, 0, 0); }
-    public static GameVector Y() { return new GameVector(0, 1, 0); }
-    public static GameVector Z() { return new GameVector(0, 0, 1); }
+    private static final GameVector ZERO = new GameVector(0, 0, 0);
+    private static final GameVector X = new GameVector(1, 0, 0);
+    private static final GameVector Y = new GameVector(0, 1, 0);
+    private static final GameVector Z = new GameVector(0, 0, 1);
+
+    public static GameVector ZERO() {
+        return new GameVector(ZERO);
+    }
+
+    public static GameVector X() {
+        return new GameVector(X);
+    }
+
+    public static GameVector Y() {
+        return new GameVector(Y);
+    }
+
+    public static GameVector Z() {
+        return new GameVector(Z);
+    }
 
     public GameVector(double x, double y, double z) {
         this.x = x;
@@ -16,8 +32,15 @@ public class GameVector {
         this.z = z;
     }
 
+    // instantiate this as a copy of [copy]
+    public GameVector(GameVector copy) {
+        this.x = copy.x;
+        this.y = copy.y;
+        this.z = copy.z;
+    }
+
     // copies attributes from newVector to this
-    private void setAttributes(GameVector newVector){
+    private void setAttributes(GameVector newVector) {
         x = newVector.x;
         y = newVector.y;
         z = newVector.z;
@@ -35,12 +58,12 @@ public class GameVector {
         );
     }
 
-    public boolean isFinite(){
+    public boolean isFinite() {
         return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z);
     }
 
 
-    public boolean isParallelTo(GameVector v){
+    public boolean isParallelTo(GameVector v) {
         return this.normal().equals(v.normal()) || this.normal().equals(v.normal().negative());
     }
 
