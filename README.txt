@@ -8,5 +8,5 @@ Controls:
 - WASD to move
 - QE to move up or down
 - move mouse to move the camera
-- scroll in/out to move directly towards/away from
+- scroll in/out to move directly towards/away from center of view
 - Esc for options/pause
