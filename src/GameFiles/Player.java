@@ -1,6 +1,6 @@
 package GameFiles;
 
-import javafx.util.Pair;
+import Helpers.Pair;
 
 import java.awt.*;
 import java.awt.event.*;

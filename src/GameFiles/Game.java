@@ -2,7 +2,7 @@ package GameFiles;
 
 import GameObjects.CubeSquares;
 import GameObjects.TriangularPyramid;
-import javafx.util.Pair;
+import Helpers.Pair;
 
 import javax.swing.*;
 import java.awt.*;
