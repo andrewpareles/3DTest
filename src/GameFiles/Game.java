@@ -1,7 +1,6 @@
 package GameFiles;
 
 import GameObjects.CubeSquares;
-import GameObjects.CubeSquares;
 import GameObjects.TriangularPyramid;
 import javafx.util.Pair;
 
@@ -80,16 +79,17 @@ public class Game extends JFrame implements ActionListener {
     private void repelClosestObject(double scaleConst, double inversePow) {
         GameVector distToClosest = objects.getLast().getCenterOfObject().minus(p.getPosition());
         GameVector amt = distToClosest.times(scaleConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
-        if (amt.isFinite()) objects.getLast().shiftBy(amt);
+        objects.getLast().shiftBy(amt);
     }
 
     //todo make these checkboxes in an escape button press
     //todo organize items by name, hashmap
     //todo intersection math: 1) camera-object 2) two different objects
     //todo add a move() function for each object to do on its own
-    boolean ROT = true, SCALE = true, REPEL = false, ESC = false;
+    //todo fix mouse jump at first, esc
+    boolean ROT = true, SCALE = true, REPEL = true;
     public void actionPerformed(ActionEvent e) {
-        if (ESC) return;
+//        if (p.ESC) return;
 
         p.move(fps);
 

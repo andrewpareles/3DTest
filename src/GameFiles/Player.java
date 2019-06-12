@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.awt.event.*;
 
-import static java.awt.event.KeyEvent.VK_SHIFT;
+import static java.awt.event.KeyEvent.*;
 import static java.lang.Math.*;
 
 public class Player implements KeyListener, MouseMotionListener, MouseListener, MouseWheelListener {
@@ -14,7 +14,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private final double d = 1;
     private double f;
 
-    private final double viewAngleWidth = 50 * PI / 180;
+    private final double viewAngleWidth = Math.toRadians(50);
     private final double viewAngleHeight = atan((double) Game.HEIGHT / Game.WIDTH * tan(viewAngleWidth));
     private final double VIEW_WIDTH = 2 * d * tan(viewAngleWidth);
     private final double VIEW_HEIGHT = 2 * d * tan(viewAngleHeight);
@@ -35,7 +35,10 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     // velocity DOES NOT incorporate walking speed
     private GameVector velocity = GameVector.ZERO();
 
-    private boolean W = false, A = false, S = false, D = false, Q = false, E = false;
+    // for move mode, TRUE, for drag mode, FALSE:
+    private boolean MOUSE_MOVE_OR_DRAG = false;
+
+    private boolean W = false, A = false, S = false, D = false, Q = false, E = false, CROUCH = false, ESC = false;
 
     private int crosshairLength = 30;
     private int crosshairWidth = 2;
@@ -45,16 +48,13 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private int scrollCount = 0;
     private double scrollSensitivity = 5;
 
-
     private final double WALK_SPEED = 15;
     private final double CROUCH_SPEED = 5;
-
-    private boolean isCrouching = false;
 
     private final double xSens = 5;
     private final double ySens = 5;
 
-    private final double verticalCutoffAngle = PI / 2 - 1 * PI / 180;
+    private final double verticalCutoffAngle = PI / 2 - Math.toRadians(1);
 
     //RI: Player can never look totally up or totally down
     Player() {
@@ -138,7 +138,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     //Pt is the coordinates of the vector (yes, starting from the origin)
-    public Pair<Integer, Integer> getCoordinatesOfPointInPlaneOnScreen(GameVector Pt) {
+    private Pair<Integer, Integer> getCoordinatesOfPointInPlaneOnScreen(GameVector Pt) {
         GameVector v = view;
         GameVector P = position;
 
@@ -206,7 +206,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         GameVector e = q.negative();
         GameVector v = view;
 
-        double speed = isCrouching ? CROUCH_SPEED : WALK_SPEED;
+        double speed = CROUCH ? CROUCH_SPEED : WALK_SPEED;
 
         w = W ? w.times(speed) : GameVector.ZERO();
         a = A ? a.times(speed) : GameVector.ZERO();
@@ -223,41 +223,45 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         this.velocity = velocity;
     }
 
-    private void setKeyPressed(char key, boolean pressed) {
-        switch (Character.toLowerCase(key)) {
-            case 'w':
+    private void setKeyPressed(int key, boolean pressed) {
+        switch (key) {
+            case VK_W:
                 W = pressed;
                 break;
-            case 'a':
+            case VK_A:
                 A = pressed;
                 break;
-            case 's':
+            case VK_S:
                 S = pressed;
                 break;
-            case 'd':
+            case VK_D:
                 D = pressed;
                 break;
-            case 'q':
+            case VK_Q:
                 Q = pressed;
                 break;
-            case 'e':
+            case VK_E:
                 E = pressed;
+                break;
+            case VK_SHIFT:
+                CROUCH = pressed;
+                break;
+            case VK_ESCAPE:
+                ESC = pressed;
                 break;
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        char key = e.getKeyChar();
-        if (e.getKeyCode() == VK_SHIFT) isCrouching = true;
-        else setKeyPressed(key, true);
+        int key = e.getKeyCode();
+        setKeyPressed(key, true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        char key = e.getKeyChar();
-        if (e.getKeyCode() == VK_SHIFT) isCrouching = false;
-        else setKeyPressed(key, false);
+        int key = e.getKeyCode();
+        setKeyPressed(key, false);
     }
 
     @Override
@@ -272,19 +276,39 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     }
 
-    private double dX, dY, prevX, prevY;
+    private double prevX;
+    private double prevY;
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = e.getXOnScreen();
-        prevY = e.getYOnScreen();
+        if (!MOUSE_MOVE_OR_DRAG) {
+            prevX = e.getX();
+            prevY = e.getY();
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        //implement this when do esc menu
 //        int xmid = Game.WIDTH / 2;
 //        int ymid = Game.HEIGHT / 2;
+//
 //        robot.mouseMove(xmid, ymid);
+
+//        prevX = xmid;
+//        prevY = ymid;
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // allows drag mode to loop around the side of the screen
+        if (!MOUSE_MOVE_OR_DRAG) {
+            if (!ESC) {
+                robot.mouseMove(xmid, ymid);
+                prevX = xmid;
+                prevY = ymid;
+            }
+        }
     }
 
     private Robot initializeRobot() {
@@ -292,17 +316,21 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         try {
             r = new Robot();
         } catch (Exception e) {
-            return r;
+            System.out.println("Error creating robot...");
         }
         return r;
     }
+
     private Robot robot = initializeRobot();
+
     private int xmid = Game.WIDTH / 2;
     private int ymid = Game.HEIGHT / 2;
 
     private void updateMouse(MouseEvent e, boolean moveTDragF) {
         int x = e.getX();
         int y = e.getY();
+        double dY;
+        double dX;
         if (moveTDragF) {
             dX = x - xmid;
             dY = y - ymid;
@@ -322,16 +350,19 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         // teleport rotation condition
 //        if (dTheta > 0 && 0 < theta + dTheta && theta + dTheta < Math.PI / 2) changeThetaBy(Math.PI / 2);
 //        if (dTheta < 0 && 0 < theta + dTheta && theta + dTheta < Math.PI / 2) changeThetaBy(-Math.PI / 2);
-
     }
+
     @Override
     public void mouseDragged(MouseEvent e) {
-//        updateMouse(e, false);
+        // if moving mouse mode but click and drag, don't care that you're clicking, do the same thing so no nested if
+        if (!ESC) updateMouse(e, MOUSE_MOVE_OR_DRAG);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        updateMouse(e, true);
+        if (MOUSE_MOVE_OR_DRAG) {
+            if (!ESC) updateMouse(e, MOUSE_MOVE_OR_DRAG);
+        }
     }
 
     @Override
@@ -340,10 +371,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 
 }
