@@ -32,7 +32,8 @@ public class Game extends JFrame implements ActionListener {
             ),
             new CubeSquares(1, 6, 6, -6),
             new CubeSquares(1, 6, -6, 6).spin(p.getView(), .1),
-            new CubeSquares(1, 6, -6, -6),
+            new CubeSquares(1, 6, -6, -6).customAction(t-> t.shiftBy(new GameVector(Math.random()-.5,Math.random()-.5,Math.random()-.5))).spin(GameVector.Z(
+            ), .1),
             new CubeSquares(1, -6, 6, 6).grow(-5),
             new CubeSquares(1, -6, 6, -6).spin(GameVector.Z(), .1),
             new CubeSquares(1, -6, -6, 6).repelFrom(p.getPosition(), .3, 2),
@@ -68,9 +69,10 @@ public class Game extends JFrame implements ActionListener {
 
     //todo make these checkboxes in an escape button press
     //todo organize items by name, hashmap
+    //todo label objects by name, add vector pointer (cylinder)
     //todo intersection math: 1) camera-object 2) two different objects
-    //todo add a move() function for each object to do on its own
     //todo fix mouse jump at first, esc
+
 
     public void actionPerformed(ActionEvent e) {
 //        if (p.ESC) return;

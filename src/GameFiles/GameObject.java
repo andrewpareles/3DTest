@@ -1,10 +1,9 @@
 package GameFiles;
 
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 //a collection of surfaces
 public class GameObject {
@@ -24,8 +23,13 @@ public class GameObject {
         surfaces.addAll(Arrays.asList(s));
     }
 
-    private GameObject setAction(Runnable r) {
-        this.action = r;
+    private GameObject addAction(Runnable r) {
+        if (action == null) action = r;
+        else {
+            Runnable old_action = action;
+            action = () -> {old_action.run(); r.run();}; // chaining
+        }
+
         return this;
     }
 
@@ -33,8 +37,9 @@ public class GameObject {
         if (action != null) action.run();
     }
 
+    //********* ACTIONS: **********
     public GameObject spin(GameVector axis, double rotationsPerSecond) {
-        setAction(() -> {
+        addAction(() -> {
             GameVector ctrOfClosest = this.getCenterOfObject();
             this.rotateBy(ctrOfClosest, axis, Math.toRadians(rotationsPerSecond * 360d) / Game.fps);
         });
@@ -43,7 +48,7 @@ public class GameObject {
     }
 
     public GameObject grow(double percent100PerSecond) {
-        setAction(() -> {
+        addAction(() -> {
             GameVector ctrOfClosest = this.getCenterOfObject();
             this.scaleBy(ctrOfClosest, (percent100PerSecond / 100d) / Game.fps);
         });
@@ -53,12 +58,21 @@ public class GameObject {
 
     // repels proportionally to scaleConst * (1 / distance^inversePow)
     public GameObject repelFrom(GameVector repel, double scaleConst, double inversePow) {
-        setAction(() -> {
+        addAction(() -> {
             GameVector distToClosest = this.getCenterOfObject().minus(repel);
             GameVector amt = distToClosest.times(scaleConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
             this.shiftBy(amt);
         });
 
+        return this;
+    }
+
+    //(this) -> {...}, where this is this GameObject
+    // NOTE: The two following lines are semantically equivalent
+    // o.customAction(a-> a.grow(-5))
+    // o.grow(-5)
+    public GameObject customAction(Consumer<GameObject> c) {
+        addAction(() -> c.accept(this));
         return this;
     }
 
