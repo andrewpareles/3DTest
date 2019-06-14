@@ -17,9 +17,9 @@ import static java.lang.Math.round;
 
 public class Game extends JFrame implements ActionListener {
 
-    final static int WIDTH = 1600;
-    final static int HEIGHT = 1000;
-    private final double fps = 60;
+    final static int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width - 50;
+    final static int HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height - 50;
+    final static double fps = 60;
 
     private Player p = new Player();
 
@@ -31,11 +31,11 @@ public class Game extends JFrame implements ActionListener {
                     GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6), new GameVector(10, 36, 7), 25)
             ),
             new CubeSquares(1, 6, 6, -6),
-            new CubeSquares(1, 6, -6, 6),
+            new CubeSquares(1, 6, -6, 6).spin(p.getView(), .1),
             new CubeSquares(1, 6, -6, -6),
-            new CubeSquares(1, -6, 6, 6),
-            new CubeSquares(1, -6, 6, -6),
-            new CubeSquares(1, -6, -6, 6),
+            new CubeSquares(1, -6, 6, 6).grow(-5),
+            new CubeSquares(1, -6, 6, -6).spin(GameVector.Z(), .1),
+            new CubeSquares(1, -6, -6, 6).repelFrom(p.getPosition(), .3, 2),
             new CubeSquares(1, -6, -6, -6)
     ));
 
@@ -43,6 +43,7 @@ public class Game extends JFrame implements ActionListener {
     private Game() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
+
         setTitle("3DGame");
         setVisible(true);
 
@@ -65,37 +66,26 @@ public class Game extends JFrame implements ActionListener {
     //NOTE: speed/fps = distance per frame
     //NOTE: percent/fps = percent per frame
 
-    private void rotateClosestObject(GameVector axis, double rotationsPerSecond) {
-        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
-        objects.getLast().rotateBy(ctrOfClosest, axis, Math.toRadians(rotationsPerSecond * 360d) / fps);
-    }
-
-    private void growClosestObject(double percent100PerSecond) {
-        GameVector ctrOfClosest = objects.getLast().getCenterOfObject();
-        objects.getLast().scaleBy(ctrOfClosest, (percent100PerSecond / 100d) / fps);
-    }
-
-    // repels proportionally to scaleConst * (1 / distance^inversePow)
-    private void repelClosestObject(double scaleConst, double inversePow) {
-        GameVector distToClosest = objects.getLast().getCenterOfObject().minus(p.getPosition());
-        GameVector amt = distToClosest.times(scaleConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
-        objects.getLast().shiftBy(amt);
-    }
-
     //todo make these checkboxes in an escape button press
     //todo organize items by name, hashmap
     //todo intersection math: 1) camera-object 2) two different objects
     //todo add a move() function for each object to do on its own
     //todo fix mouse jump at first, esc
-    boolean ROT = true, SCALE = true, REPEL = false;
+
     public void actionPerformed(ActionEvent e) {
 //        if (p.ESC) return;
 
         p.move(fps);
 
-        if (ROT) rotateClosestObject(p.getView(), .1);
-        if (SCALE) growClosestObject(-5);
-        if (REPEL) repelClosestObject(.3, 2);
+        for (GameObject o : objects)
+            o.run();
+
+
+//        GameObject closest = objects.getLast();
+//        rotateGameObject(closest, p.getView(), .1);
+//        growGameObject(closest, -5);
+//        repelGameObject(closest, .3, 2);
+
 
         repaint();
     }
@@ -106,16 +96,23 @@ public class Game extends JFrame implements ActionListener {
     }
 
     private void drawObjects() {
-
         Image img = createImage(WIDTH, HEIGHT);
-        objects.sort((o1, o2) -> {
-            double compare = o1.getCenterOfObject().distanceTo(p.getPosition()) -
-                    o2.getCenterOfObject().distanceTo(p.getPosition());
+
+        // GET AND SORT ALL SURFACES BASED ON DISTANCE
+        ArrayList<GameSurface> surfaces = new ArrayList<>();
+
+        for (GameObject o : objects)
+            surfaces.addAll(o.getSurfaces());
+
+        surfaces.sort((s1, s2) -> {
+            double compare = s1.getCenterOfSurface().distanceTo(p.getPosition()) -
+                    s2.getCenterOfSurface().distanceTo(p.getPosition());
             return compare == 0 ? 0 : compare < 0 ? 1 : -1;
         });
 
-        for (GameObject o : objects)
-            drawObject(o, img);
+        // DRAW ALL SURFACES IN ORDER
+        for (GameSurface s : surfaces)
+            drawSurface(s, img);
 
         //DRAW CROSSHAIR
         int crosshairLength = p.getCrosshairLength();
@@ -125,22 +122,8 @@ public class Game extends JFrame implements ActionListener {
         g.fillRect((WIDTH - crosshairLength) / 2, (HEIGHT - crosshairWidth) / 2, crosshairLength, crosshairWidth);
         g.fillRect((WIDTH - crosshairWidth) / 2, (HEIGHT - crosshairLength) / 2, crosshairWidth, crosshairLength);
 
-        getGraphics().drawImage(img, 0, 0, this);
+        this.getGraphics().drawImage(img, 0, 0, this);
     }
-
-    private void drawObject(GameObject o, Image img) {
-        ArrayList<GameSurface> surfaces = o.getSurfaces();
-        //closest surface comes 1st
-        surfaces.sort((o1, o2) -> {
-            double compare = o1.getCenterOfSurface().distanceTo(p.getPosition()) -
-                    o2.getCenterOfSurface().distanceTo(p.getPosition());
-            return compare == 0 ? 0 : compare < 0 ? 1 : -1;
-        });
-
-        for (GameSurface s : surfaces)
-            drawSurface(s, img);
-    }
-
 
     private void drawSurface(GameSurface s, Image img) {
         Graphics imgGraphics = img.getGraphics();
@@ -185,11 +168,11 @@ public class Game extends JFrame implements ActionListener {
     }
 
     public static int flipComputerCoordinateX(int X) {
-        return WIDTH - X;
+        return WIDTH / 2 - X;
     }
 
     public static int flipComputerCoordinateY(int Y) {
-        return -Y;
+        return HEIGHT / 2 - Y;
     }
 
 }

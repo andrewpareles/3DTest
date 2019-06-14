@@ -31,12 +31,12 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private GameVector position = positionDefault;
 
     //view is always normal
-    private GameVector view;
+    private GameVector view = GameVector.ZERO();
     // velocity DOES NOT incorporate walking speed
     private GameVector velocity = GameVector.ZERO();
 
     // for move mode, TRUE, for drag mode, FALSE:
-    private boolean MOUSE_MOVE_OR_DRAG = false;
+    private boolean MOUSE_MOVE_OR_DRAG = true;
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false, CROUCH = false, ESC = false;
 
@@ -92,7 +92,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
         while (phi < -Math.PI / 2) phi += Math.PI;
 
 
-        view = new GameVector(f * cos(theta), f * sin(theta), d * sin(phi));
+        view.updateTo(f * cos(theta), f * sin(theta), d * sin(phi));
     }
 
     // theta is in radians
@@ -126,7 +126,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     public void moveInDirection(GameVector direction) {
-        position = position.plus(direction);
+        position.shiftBy(direction);
     }
 
     public GameVector getPosition() {
@@ -220,7 +220,7 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     }
 
     private void setVelocity(GameVector velocity) {
-        this.velocity = velocity;
+        this.velocity.updateTo(velocity);
     }
 
     private void setKeyPressed(int key, boolean pressed) {

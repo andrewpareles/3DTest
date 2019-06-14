@@ -10,7 +10,7 @@ public class CubeSquares extends GameObject {
 
     //s is size, x y z is coords
     public CubeSquares(double s, double x, double y, double z) {
-// wall, xs position
+        // wall, xs position
         super(
                 GameSurface.createSurface(new Color(120, 32, 6),
                         new GameVector(x, y, z),

@@ -40,10 +40,17 @@ public class GameVector {
     }
 
     // copies attributes from newVector to this
-    private void setAttributes(GameVector newVector) {
+    public void updateTo(GameVector newVector) {
         x = newVector.x;
         y = newVector.y;
         z = newVector.z;
+    }
+
+    // copies attributes from newVector to this
+    public void updateTo(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public double dot(GameVector v) {
@@ -122,7 +129,7 @@ public class GameVector {
     }
 
     public void scaleBy(GameVector focus, double percentChange) {
-        setAttributes(scaledBy(focus, percentChange));
+        updateTo(scaledBy(focus, percentChange));
     }
 
     // Project t onto v, return (t . v ) v
@@ -163,11 +170,11 @@ public class GameVector {
     }
 
     public void rotateBy(GameVector focus, GameVector axis, double theta) {
-        setAttributes(rotatedBy(focus, axis, theta));
+        updateTo(rotatedBy(focus, axis, theta));
     }
 
     public void shiftBy(GameVector shift) {
-        setAttributes(plus(shift));
+        updateTo(plus(shift));
     }
 
     public String toString() {
