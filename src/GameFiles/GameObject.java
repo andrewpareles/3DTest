@@ -23,7 +23,7 @@ public class GameObject {
         surfaces.addAll(Arrays.asList(s));
     }
 
-    private GameObject addAction(Runnable r) {
+    private void addAction(Runnable r) {
         if (action == null) action = r;
         else {
             Runnable old_action = action; //chaining
@@ -32,6 +32,14 @@ public class GameObject {
                 r.run();
             };
         }
+    }
+
+    //(this) -> {...}, where this is this GameObject
+    // NOTE: The two following lines are semantically equivalent
+    // o.customAction(a-> a.grow(-5))
+    // o.grow(-5)
+    public GameObject addAction(Consumer<GameObject> c) {
+        addAction(() -> c.accept(this));
 
         return this;
     }
@@ -58,15 +66,6 @@ public class GameObject {
         this.shiftBy(amt);
     }
 
-    //(this) -> {...}, where this is this GameObject
-    // NOTE: The two following lines are semantically equivalent
-    // o.customAction(a-> a.grow(-5))
-    // o.grow(-5)
-    public GameObject addAction(Consumer<GameObject> c) {
-        addAction(() -> c.accept(this));
-
-        return this;
-    }
 
 
     public ArrayList<GameSurface> getSurfaces() {

@@ -11,7 +11,7 @@ import static java.lang.Math.*;
 public class Player implements KeyListener, MouseMotionListener, MouseListener, MouseWheelListener {
 
     // for move mode, TRUE, for drag mode, FALSE:
-    private boolean MOUSE_MOVE_OR_DRAG = false;
+    private boolean MOUSE_MOVE_OR_DRAG = true;
 
 
     //changing d doesn't alter anything unless VIEW_WIDTH and VIEW_HEIGHT are held constant (not dependent on angle)
