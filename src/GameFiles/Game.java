@@ -87,14 +87,14 @@ public class Game extends JFrame implements ActionListener {
     //todo intersection math: 1) camera-object 2) two different objects
     //todo add a move() function for each object to do on its own
     //todo fix mouse jump at first, esc
-    boolean ROT = true, SCALE = true, REPEL = true;
+    boolean ROT = true, SCALE = true, REPEL = false;
     public void actionPerformed(ActionEvent e) {
 //        if (p.ESC) return;
 
         p.move(fps);
 
         if (ROT) rotateClosestObject(p.getView(), .1);
-        if (SCALE) growClosestObject(5);
+        if (SCALE) growClosestObject(-5);
         if (REPEL) repelClosestObject(.3, 2);
 
         repaint();
