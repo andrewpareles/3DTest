@@ -26,8 +26,11 @@ public class GameObject {
     private GameObject addAction(Runnable r) {
         if (action == null) action = r;
         else {
-            Runnable old_action = action;
-            action = () -> {old_action.run(); r.run();}; // chaining
+            Runnable old_action = action; //chaining
+            action = () -> {
+                old_action.run();
+                r.run();
+            };
         }
 
         return this;
@@ -38,41 +41,30 @@ public class GameObject {
     }
 
     //********* ACTIONS: **********
-    public GameObject spin(GameVector axis, double rotationsPerSecond) {
-        addAction(() -> {
-            GameVector ctrOfClosest = this.getCenterOfObject();
-            this.rotateBy(ctrOfClosest, axis, Math.toRadians(rotationsPerSecond * 360d) / Game.fps);
-        });
-
-        return this;
+    public void spin(GameVector axis, double rotationsPerSecond) {
+        GameVector ctrOfClosest = this.getCenterOfObject();
+        this.rotateBy(ctrOfClosest, axis, Math.toRadians(rotationsPerSecond * 360d) / Game.fps);
     }
 
-    public GameObject grow(double percent100PerSecond) {
-        addAction(() -> {
-            GameVector ctrOfClosest = this.getCenterOfObject();
-            this.scaleBy(ctrOfClosest, (percent100PerSecond / 100d) / Game.fps);
-        });
-
-        return this;
+    public void grow(double percent100PerSecond) {
+        GameVector ctrOfClosest = this.getCenterOfObject();
+        this.scaleBy(ctrOfClosest, (percent100PerSecond / 100d) / Game.fps);
     }
 
     // repels proportionally to scaleConst * (1 / distance^inversePow)
-    public GameObject repelFrom(GameVector repel, double scaleConst, double inversePow) {
-        addAction(() -> {
-            GameVector distToClosest = this.getCenterOfObject().minus(repel);
-            GameVector amt = distToClosest.times(scaleConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
-            this.shiftBy(amt);
-        });
-
-        return this;
+    public void repelFrom(GameVector repel, double repelConst, double inversePow) {
+        GameVector distToClosest = this.getCenterOfObject().minus(repel);
+        GameVector amt = distToClosest.times(repelConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
+        this.shiftBy(amt);
     }
 
     //(this) -> {...}, where this is this GameObject
     // NOTE: The two following lines are semantically equivalent
     // o.customAction(a-> a.grow(-5))
     // o.grow(-5)
-    public GameObject customAction(Consumer<GameObject> c) {
+    public GameObject addAction(Consumer<GameObject> c) {
         addAction(() -> c.accept(this));
+
         return this;
     }
 

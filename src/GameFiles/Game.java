@@ -27,16 +27,14 @@ public class Game extends JFrame implements ActionListener {
             new CubeSquares(5, 0, 0, 0),
             new TriangularPyramid(20, 20, 20, 2),
             new CubeSquares(1, 6, 6, 6),
-            new GameObject(
-                    GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6), new GameVector(10, 36, 7), 25)
-            ),
+            new GameObject(GameSurface.createSurface(new Color(0, 17, 255), new GameVector(12, 32, 8), new GameVector(18, 32, 6), new GameVector(10, 36, 7), 25)),
             new CubeSquares(1, 6, 6, -6),
-            new CubeSquares(1, 6, -6, 6).spin(p.getView(), .1),
-            new CubeSquares(1, 6, -6, -6).customAction(t-> t.shiftBy(new GameVector(Math.random()-.5,Math.random()-.5,Math.random()-.5))).spin(GameVector.Z(
-            ), .1),
-            new CubeSquares(1, -6, 6, 6).grow(-5),
-            new CubeSquares(1, -6, 6, -6).spin(GameVector.Z(), .1),
-            new CubeSquares(1, -6, -6, 6).repelFrom(p.getPosition(), .3, 2),
+
+            new CubeSquares(1, 6, -6, 6).addAction(t-> t.spin(p.getView(), .1)),
+            new CubeSquares(1, 6, -6, -6).addAction(t -> t.shiftBy(new GameVector(Math.random() - .5, Math.random() - .5, Math.random() - .5))).addAction(t->t.spin(GameVector.Z(), .1)),
+            new CubeSquares(1, -6, 6, 6).addAction(t->t.grow(-5)),
+            new CubeSquares(1, -6, 6, -6).addAction(t->t.spin(GameVector.Z(), .1)),
+            new CubeSquares(1, -6, -6, 6).addAction(t-> t.repelFrom(p.getPosition(), -.3, 2)).addAction(t-> t.spin(t.getCenterOfObject().minus(p.getPosition()), 3)),
             new CubeSquares(1, -6, -6, -6)
     ));
 

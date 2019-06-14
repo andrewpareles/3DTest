@@ -10,6 +10,10 @@ import static java.lang.Math.*;
 
 public class Player implements KeyListener, MouseMotionListener, MouseListener, MouseWheelListener {
 
+    // for move mode, TRUE, for drag mode, FALSE:
+    private boolean MOUSE_MOVE_OR_DRAG = false;
+
+
     //changing d doesn't alter anything unless VIEW_WIDTH and VIEW_HEIGHT are held constant (not dependent on angle)
     private final double d = 1;
     private double f;
@@ -34,9 +38,6 @@ public class Player implements KeyListener, MouseMotionListener, MouseListener, 
     private GameVector view = GameVector.ZERO();
     // velocity DOES NOT incorporate walking speed
     private GameVector velocity = GameVector.ZERO();
-
-    // for move mode, TRUE, for drag mode, FALSE:
-    private boolean MOUSE_MOVE_OR_DRAG = true;
 
     private boolean W = false, A = false, S = false, D = false, Q = false, E = false, CROUCH = false, ESC = false;
 
