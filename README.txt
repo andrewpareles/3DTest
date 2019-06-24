@@ -1,6 +1,6 @@
 @author Andrew Pareles
 
-All the math, code, and algorithms were calculated, formulated and written by me!
+All the math, code, and algorithms were dreamt up, calculated, formulated and written by me!
 
 To execute, run the executable file located at ./out/artifacts/3DTest_jar/3DTest.jar
 
