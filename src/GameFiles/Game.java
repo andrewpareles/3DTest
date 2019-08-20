@@ -70,7 +70,7 @@ public class Game extends JFrame implements ActionListener {
     //todo label objects by name, add vector pointer (cylinder)
     //todo intersection math: 1) camera-object 2) two different objects
     //todo fix mouse jump at first, esc
-
+    //todo fix resizing screen 
 
     public void actionPerformed(ActionEvent e) {
 //        if (p.ESC) return;
