@@ -11,4 +11,4 @@ Controls:
 - QE to move up or down
 - move mouse to move the camera
 - scroll in/out to move directly towards/away from center of view
-- Esc for options/pause
+- Esc for options/pause (for now just hold Esc to freely move mouse)
