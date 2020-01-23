@@ -10,3 +10,5 @@ Controls:
 - move mouse to move the camera
 - scroll in/out to move directly towards/away from center of view
 - Esc for options/pause
+
+![](demophoto.png)
