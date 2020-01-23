@@ -1,9 +1,8 @@
-
-![](demophoto.png)
-
 @author Andrew Pareles
 
 All the math, code, and algorithms were formulated and written by me!
+
+![](demophoto.png)
 
 To execute, run the executable file located at ./out/artifacts/3DTest_jar/3DTest.jar
 
