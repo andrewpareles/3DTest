@@ -60,10 +60,21 @@ public class GameObject {
     }
 
     // repels proportionally to scaleConst * (1 / distance^inversePow)
-    public void repelFrom(GameVector repel, double repelConst, double inversePow) {
-        GameVector distToClosest = this.getCenterOfObject().minus(repel);
-        GameVector amt = distToClosest.times(repelConst / Math.pow(distToClosest.lengthSquared(), inversePow / 2));
+    public void repelFrom(GameVector repellentPoint, double repelConst, double inversePow) {
+        GameVector distToRepellent = this.getCenterOfObject().minus(repellentPoint);
+        GameVector amt = distToRepellent.times(repelConst / Math.pow(distToRepellent.lengthSquared(), inversePow / 2));
         this.shiftBy(amt);
+    }
+
+    public void leonardJonesRepelFrom(GameVector repellentPoint, double const1, double const2, double nPow) {
+        //F = d/dx(a x^2n - b x^n) = an x^2n-1 - bn x^n-1
+        assert const1 > 0 && const2 > 0;
+        GameVector distToRepellent = this.getCenterOfObject().minus(repellentPoint);
+        double len = distToRepellent.length();
+        GameVector unitVec = distToRepellent.normal();
+        //TODO
+//        GameVector amt = distToRepellent.times(repelConst / Math.pow(distToRepellent.lengthSquared(), inversePow / 2));
+//        this.shiftBy(amt);
     }
 
 
