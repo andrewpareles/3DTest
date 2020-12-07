@@ -1,6 +1,8 @@
 @author Andrew Pareles
 
-All the math, code, and algorithms were formulated and written by me!
+This method is based on the math behind a pinhole camera. All objects are represented by their vertices, which are traced "through the pinhole" onto a screen (your viewing plane). Since straight edges will always be seen as straight in 3D, all faces can be filled in using just the information about the vertices!
+
+All the math, code, and algorithms were formulated and written by me.
 
 ![](demophoto.png)
 
