@@ -1,6 +1,6 @@
 @author Andrew Pareles
 
-Your perspective in this program is that of a pinhole camera! All 3D objects are represented by their vertices, which are traced "through the pinhole" onto your 2d screen. Since straight edges will always be seen as straight in 3D, all faces can be filled in using solely the information about these traced vertices.
+Your perspective in this program is that of a pinhole camera! All 3D objects are represented by their vertices, which are traced "through the pinhole" onto your 2d screen. Since straight edges will always be seen as straight lines in 3D, all faces can be filled in using solely the information about these traced vertices.
 
 All the math, code, and algorithms were formulated and written by me.
 
