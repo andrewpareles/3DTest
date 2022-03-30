@@ -2,7 +2,7 @@
 
 Your perspective in this program is through the aperture of a pinhole camera! All 3D objects are represented by their vertices, which are traced "through the pinhole" onto your 2d screen. Since straight edges in 3D will always be seen as straight lines, all non-intersecting faces can be filled in by polygons using solely the information about these traced vertices and their distance to the camera -- ray tracing, ray marching, etc not needed. 
 
-The underlying math and algorithms were derived and written by me!
+All of the math (and code) was derived and written by me!
 
 ![](demophoto.png)
 
