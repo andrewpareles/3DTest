@@ -11,4 +11,3 @@ Controls:
 - scroll in/out to move directly towards/away from center of view
 - Esc for options/pause (for now just hold Esc to freely move mouse)
 
-Ultimately, I'd like to transfer this project to HTML5 and JS...
