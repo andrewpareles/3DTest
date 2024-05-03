@@ -12,4 +12,3 @@ Controls:
 - Esc for options/pause (for now just hold Esc to freely move mouse)
 
 
-![](demophoto.png)
